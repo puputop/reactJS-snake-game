@@ -1,0 +1,152 @@
+#board-wrapper{
+    display: flex;
+    flex-direction: row;
+    margin: 20px;
+    border: 20px solid #eee;
+}
+.board-menu-side{
+    display: flex;
+    flex-direction: column;
+    border-right: 20px solid #eee;
+}
+.menu-button{
+    font-weight: bold;
+    cursor:not-allowed;
+    display:block;
+    width:150px;
+    margin:10px;
+    padding:5px;
+    background-color: #eee;
+    border: 1px solid #1c2949;
+    color: #1c2949;
+    opacity: 0.5;
+}
+.menu-button.active{
+    opacity: 1;
+    cursor:pointer;
+    background-color: #61dafb;
+}
+.menu-button.active:hover{
+    background-color: aqua;
+}
+.board-score-side{
+    display: flex;
+    flex-direction: column;
+    border-left: 20px solid #eee;
+
+}
+.score{
+    display: flex;
+    width:150px;
+    margin:10px;
+    padding:5px;
+    border: 1px solid #1c2949;
+    color: #1c2949;
+}
+.score .label{
+    display: flex;
+    width:65px;
+}
+.score .value{
+    justify-content: center;
+    display: flex;
+    width:85px;
+    font-weight: bold;
+}
+.board-game-side{
+    display: flex;
+    flex-direction: column;
+}
+.board-title {
+    font-size: 12pt;
+    font-family: Helvetica, serif;
+
+    border-bottom: 20px solid #eee;
+    margin: 0;
+    padding: 10px;
+}
+#board-active-area {
+    outline: none;
+    position: relative;
+}
+
+#board-bg {
+    font-size: 7px;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #bbb;
+    border-top: 1px solid #bbb;
+}
+
+.line {
+    display: flex;
+    flex-direction: row;
+}
+
+.field {
+    box-sizing: border-box;
+    width: 20px;
+    height: 20px;
+    border-left: 1px solid #bbb;
+    border-bottom: 1px solid #bbb;
+}
+
+
+/* Snake */
+.snake {
+    z-index: 100;
+}
+
+
+.snake-body-section {
+    z-index: 100;
+    position: absolute;
+    background-color: #014401;
+    border-radius: 7px;
+}
+.game-over .snake-body-section {
+    background-color: darkred;
+}
+.snake-head {
+    z-index: 101;
+    position: absolute;
+    background-color: #2a6701;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+}
+.snake-head::before {
+    content: ".";
+    font-size:10px;
+    color:transparent;
+    z-index: 102;
+    position:absolute;
+    top:6px;
+    left:6px;
+    width:4px;
+    height:4px;
+    background-color: yellowgreen;
+    border-radius: 50%;
+}
+
+/* Coins */
+.coin {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: saddlebrown;
+    font-size:11px;
+    z-index: 102;
+    position: absolute;
+    background-color: gold;
+    border: 1px solid darkorange;
+    border-radius: 50%;
+    width:14px;
+    height:14px;
+    animation: coinAnimation 1000ms linear infinite;
+}
+@keyframes coinAnimation {
+    0% {transform: rotateY(0deg);}
+    50% {transform: rotateY(90deg);}
+    100% {transform: rotateY(0deg);}
+}
