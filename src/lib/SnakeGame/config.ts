@@ -2,7 +2,7 @@
 export const BOARD = {
     CELL_LENGTH: 20 as number,  // width & height cell of board (if you want to change - need correct CSS (game.css))
     ROWS: 20 as number, // cells per row
-    COLS: 40 as number // cells per column
+    COLS: 20 as number // cells per column
 }
 // GAME setting
 export const SNAKE = {
@@ -14,9 +14,9 @@ export const SNAKE = {
         }
     },
     SPEED: {
-        INITIAL:            300 as number,  // milliseconds
-        MINIMAL:            35  as number,  // milliseconds
-        GROWTH_STEP:        5   as number,  // percents from initial
+        INITIAL:            250 as number,  // milliseconds
+        MINIMAL:            50  as number,  // milliseconds
+        GROWTH_STEP:        2   as number,  // percents from initial
         GROWTH_INTERVAL:    1   as number,  // seconds
     }
 }

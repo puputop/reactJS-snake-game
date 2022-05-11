@@ -1,14 +1,7 @@
 import {ReactElement} from "react";
 import {BOARD, SNAKE} from "../../config";
+import Point, {isInlinePoints, isNeighboringPoints} from "./Point";
 
-export type Point = {
-    x: number,
-    y: number
-};
-
-export function isNeighboringPoints(a : Point, b : Point) : boolean {
-    return Math.abs(a.x - b.x) + Math.abs(a.y - b.y) === 1;
-}
 
 
 export type Snake = {
@@ -16,9 +9,10 @@ export type Snake = {
     getDisposition: () => Array<Point>,
     moveSnake: (direction: Direction) => boolean
     isPossibleDirection: (direction: Direction) => boolean
-    getCurrentPoint: () => Point,
+    getBeginPoint: () => Point,
     growth: () => void, // length++
-    reborn: () => void  // snake params to default (for new game)
+    reborn: () => void,  // snake params to default (for new game)
+    draw: () => ReactElement
 };
 
 export enum Direction {left, right, top, bottom}
@@ -102,17 +96,16 @@ export function createSnake(boardParams : {cols: number, rows: number}) : Snake 
     return {
         getLength: () => length,
         getDisposition: () => disposition,
-        moveSnake: function(direction){
-            return moveSnake(direction)
-        },
+        moveSnake: (direction) => moveSnake(direction),
         isPossibleDirection: (direction) => isPossibleDirection(direction),
-        getCurrentPoint: () => disposition[disposition.length - 1],
+        getBeginPoint: () => disposition[disposition.length - 1],
         growth: () => {length++},
-        reborn: () => reborn()
+        reborn: () => reborn(),
+        draw: () => DrawSnake({snakeDisposition : disposition}),
     };
 }
 
-export function DrawSnake(params : {snakeDisposition: Array<Point>}) : ReactElement {
+function DrawSnake(params : {snakeDisposition: Array<Point>}) : ReactElement {
     const {snakeDisposition} = params;
     const l = BOARD.CELL_LENGTH; // width|height of 1 field
     let lineBegin: Point|null = null;
@@ -120,15 +113,13 @@ export function DrawSnake(params : {snakeDisposition: Array<Point>}) : ReactElem
     let sprites: ReactElement[] = [];
     function pushSprint() {
         if(lineBegin !== null && lineEnd !== null) {
-            const x1 = lineBegin.x,
-                y1 = lineBegin.y,
-                x2 = lineEnd.x,
-                y2 = lineEnd.y;
+            const {x : x1, y : y1} = lineBegin;
+            const {x : x2, y : y2} = lineEnd;
             const style = {
                 top: Math.min(y1, y2) * l + 2,
                 left: Math.min(x1, x2) * l + 2,
                 width: (Math.abs(x2 - x1) + 1) * l - 4,
-                height: (Math.abs(y2 - y1) + 1) * l - 4
+                height: (Math.abs(y2 - y1) + 1) * l - 4,
             }
             sprites.push(<span key={x1+'-'+x2+'-'+y1+'-'+y2} className='snake-body-section' style={style} />)
             // clear
@@ -137,11 +128,11 @@ export function DrawSnake(params : {snakeDisposition: Array<Point>}) : ReactElem
         }
     }
     function pushEye() {
-        const p = snakeDisposition[snakeDisposition.length - 1];
-        if(p) {
+        const point : Point = snakeDisposition[snakeDisposition.length - 1];
+        if(point) {
             const style = {
-                top: p.y * l + 2,
-                left: p.x * l + 2,
+                top: point.y * l + 2,
+                left: point.x * l + 2,
             };
             sprites.push(<span key={-1} className='snake-head' style={style}/>)
         }
@@ -159,9 +150,7 @@ export function DrawSnake(params : {snakeDisposition: Array<Point>}) : ReactElem
             lineBegin = point;
         } if(!lineEnd) {
             lineEnd = point;
-        } else if((lineEnd.y === point.y && lineBegin.y === point.y)
-            || (lineEnd.x === point.x && lineBegin.x === point.x)
-        ) {
+        } else if(isInlinePoints([lineEnd, lineBegin, point])) {
             lineEnd = point;
         } else {
             pushSprint();

@@ -1,6 +1,7 @@
-import {Point, Snake} from "./Snake";
+import {Snake} from "./Snake";
 import {ReactElement} from "react";
 import {BOARD, COINS} from "../../config";
+import Point from "./Point";
 
 export type Coin = {
     point: Point,
@@ -8,6 +9,18 @@ export type Coin = {
     lifetime: number,   // milliseconds
     isAlive: (gameTime: number) => boolean
 };
+
+export type CoinsFarm = {
+    start: () => void,
+    stop: () => void,
+    clear: () => void,
+    draw: () => ReactElement,
+    hasCoinThere: (p : Point) => boolean,
+    setMinTimeRespawn: (milliseconds : number) => void,
+    setMaxTimeRespawn: (milliseconds : number) => void,
+    setMinLifetime: (milliseconds : number) => void,
+    setMaxLifetime: (milliseconds : number) => void,
+}
 
 export function createCoin(boardCols: number, boardRows: number, gameDuration: number, snake: Snake, coins: Array<Coin>) : Coin {
     function isVacantPoint(p : Point) : boolean {
@@ -24,13 +37,13 @@ export function createCoin(boardCols: number, boardRows: number, gameDuration: n
     }
     let x: number,
         y: number,
-        p: Point = {x:0,y:0},
+        point: Point = {x:0,y:0},
         isFound: boolean = false;
     for(let time = 0; time < 20; time++) {
         x = Math.round(Math.random() * (boardCols-1));
         y = Math.round(Math.random() * (boardRows-1));
-        p = {x,y};
-        if(isVacantPoint(p)) {
+        point = {x,y};
+        if(isVacantPoint(point)) {
             isFound = true;
             break;
         }
@@ -39,8 +52,8 @@ export function createCoin(boardCols: number, boardRows: number, gameDuration: n
     if(!isFound) {
         for (x = 0; x < boardCols; x++) {
             for (y = 0; y < boardRows; y++) {
-                p = {x, y};
-                if(isVacantPoint(p)) {
+                point = {x, y};
+                if(isVacantPoint(point)) {
                     isFound = true;
                     break;
                 }
@@ -50,7 +63,7 @@ export function createCoin(boardCols: number, boardRows: number, gameDuration: n
     if(isFound) {
         // create Coin
         return {
-            point: p,
+            point,
             bornTime: gameDuration,
             lifetime: COINS.LIFE_TIME_MIN + Math.random() * (COINS.LIFE_TIME_MAX - COINS.LIFE_TIME_MIN),
             isAlive: function(gameTime: number) : boolean {

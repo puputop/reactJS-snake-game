@@ -1,7 +1,7 @@
 import React from 'react';
 import './style/game.css';
 import Board from "./Core/Interface/Board";
-import {createSnake, Direction, DrawSnake, Snake} from "./Core/Objects/Snake";
+import {createSnake, Direction, Snake} from "./Core/Objects/Snake";
 import {COINS, pointsPerStep, SNAKE} from "./config";
 import {Coin, createCoin, DrawCoins} from "./Core/Objects/Coins";
 import Menu, {menuActions} from "./Core/Interface/Menu";
@@ -14,7 +14,7 @@ interface IGameProps {
 }
 
 interface IGameState {
-    snake: Snake,
+    // snake: Snake,
     coins: Coin[],
     status: gameStatus,
     points: number,
@@ -33,13 +33,15 @@ class Game extends React.Component<IGameProps, IGameState> {
     startGameTime: number = new Date().getTime()
     pauseDuration: number = 0
     pauseStartTime: number = 0
+    snake: Snake
 
 
     constructor(props: IGameProps) {
         super(props);
         const {cols, rows} = props;
+        this.snake = createSnake({cols, rows});
         this.state = {
-            snake: createSnake({cols, rows}),
+            // snake: createSnake({cols, rows}),
             coins: [],
             status: gameStatus.STOP,
             points: 0,
@@ -93,7 +95,7 @@ class Game extends React.Component<IGameProps, IGameState> {
     }
 
     setDirection(direction : Direction) : void {
-        if (this.state.snake.isPossibleDirection(direction)) {
+        if (this.snake.isPossibleDirection(direction)) {
             if(this.currentDirection !== direction) {
                 this.currentDirection = direction
                 // for perfect control in the game
@@ -125,7 +127,7 @@ class Game extends React.Component<IGameProps, IGameState> {
             this.startGameTime = (new Date()).getTime();
             this.setState<never>((prevState) => {
                 if (prevState.status === gameStatus.STOP) {
-                    this.state.snake.reborn();
+                    this.snake.reborn();
                     return {
                         coins: [],
                         status: gameStatus.PLAY,
@@ -167,16 +169,16 @@ class Game extends React.Component<IGameProps, IGameState> {
 
     snakeMove(): void {
         if (this.state.status === gameStatus.PLAY) {
-            if (this.state.snake.moveSnake(this.currentDirection)) {
-                const snakeNewPoint = this.state.snake.getCurrentPoint();
+            if (this.snake.moveSnake(this.currentDirection)) {
+                const snakeNewPoint = this.snake.getBeginPoint();
                 // coins
                 const removeIndexes : number[] = [];
                 this.state.coins.forEach((coin, i) => {
                     if (coin.point.x === snakeNewPoint.x && coin.point.y === snakeNewPoint.y) {
-                        // 1. find coin is grabbing
+                        // 1. find grabbing coin
                         removeIndexes.push(i);
-                        this.state.snake.growth();
-                    } else if (coin.bornTime + coin.lifetime < this.state.gameDuration) {
+                        this.snake.growth();
+                    } else if (coin.isAlive(this.state.gameDuration)) {
                         // 2. find coins with expired lifetime
                         removeIndexes.push(i);
                     }
@@ -185,7 +187,7 @@ class Game extends React.Component<IGameProps, IGameState> {
                 removeIndexes.reverse().forEach((index) => {this.state.coins.splice(index, 1)})
                 // move Snake
                 this.setState<never>((prevState) => ({
-                    points: prevState.points + pointsPerStep(prevState.snake.getLength(), this.getSpeed()),
+                    points: prevState.points + pointsPerStep(this.snake.getLength(), this.getSpeed()),
                     gameDuration: new Date().getTime() - this.startGameTime - this.pauseDuration,
                 }));
             } else {
@@ -204,7 +206,7 @@ class Game extends React.Component<IGameProps, IGameState> {
     respawnCoin(): void {
         if (this.state.status === gameStatus.PLAY) {
             this.state.coins.push(
-                createCoin(this.props.cols, this.props.rows, this.state.gameDuration, this.state.snake, this.state.coins)
+                createCoin(this.props.cols, this.props.rows, this.state.gameDuration, this.snake, this.state.coins)
             )
         }
         if(this.state.status !== gameStatus.STOP) {
@@ -233,7 +235,7 @@ class Game extends React.Component<IGameProps, IGameState> {
                 <div id='board-active-area' className={this.state.status === gameStatus.STOP ? workAreaClass : ''}
                      ref={this.gameBoardDiv} tabIndex={0} onKeyDown={(e) => this.keyPress(e)}>
                     <Board cols={this.props.cols} rows={this.props.rows}/>
-                    <DrawSnake snakeDisposition={this.state.snake.getDisposition()}/>
+                    <this.snake.draw />
                     <DrawCoins coins={this.state.coins} gameDuration={this.state.gameDuration}/>
                 </div>
             </div>
@@ -242,7 +244,7 @@ class Game extends React.Component<IGameProps, IGameState> {
                 <Score points={this.state.points}
                        gameDuration={this.state.gameDuration}
                        snakeSpeed={this.getSpeed()}
-                       snakeLength={this.state.snake.getLength()}/>
+                       snakeLength={this.snake.getLength()}/>
             </div>
         </div>
     }
