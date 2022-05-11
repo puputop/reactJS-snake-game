@@ -1,7 +1,10 @@
-export function generateBoard(cols : number, rows : number)  {
-    let board = [];
+import {ReactElement} from "react";
+
+function Board(props: {cols: number, rows: number}) : ReactElement  {
+    const {cols, rows} = props;
+    const board = [];
     for(let x = 0; x < rows; x++) {
-        let line = [];
+        const line = [];
         for(let y = 0; y < cols; y++) {
             line.push(<span className='field' key={y}></span>)
         }
@@ -9,3 +12,5 @@ export function generateBoard(cols : number, rows : number)  {
     }
     return <div id='board-bg'>{board.concat()}</div>;
 }
+
+export default Board;

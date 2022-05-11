@@ -1,5 +1,5 @@
 import {ReactElement} from "react";
-import {BOARD, SNAKE} from "./config";
+import {BOARD, SNAKE} from "../../config";
 
 export type Point = {
     x: number,
@@ -12,24 +12,33 @@ export function isNeighboringPoints(a : Point, b : Point) : boolean {
 
 
 export type Snake = {
-    length: number,
-    disposition: Array<Point>,
+    getLength: () => number,
+    getDisposition: () => Array<Point>,
     moveSnake: (direction: Direction) => boolean
     isPossibleDirection: (direction: Direction) => boolean
     getCurrentPoint: () => Point,
-    growth: () => void,
+    growth: () => void, // length++
+    reborn: () => void  // snake params to default (for new game)
 };
 
 export enum Direction {left, right, top, bottom}
 
-export function createSnake(boardCols: number, boardRows: number) : Snake {
-    let disposition: Array<Point> = [];
-    let length = SNAKE.INITIAL.LENGTH;
-    const y = SNAKE.INITIAL.POSITION.y;
-    for(let x = SNAKE.INITIAL.POSITION.x; x < length; x++) {
-        disposition.push({x, y});
+export function createSnake(boardParams : {cols: number, rows: number}) : Snake {
+    const {cols, rows} = boardParams;
+    let disposition : Array<Point> = [];
+    let length : number = 0;
+    reborn();
+
+    function reborn() : void {
+        disposition = [];
+        length = SNAKE.INITIAL.LENGTH;
+        const y = SNAKE.INITIAL.POSITION.y;
+        for(let x = SNAKE.INITIAL.POSITION.x; x < length; x++) {
+            disposition.push({x, y});
+        }
     }
-    function newPoint(direction: Direction) : Point {
+
+    function nextPoint(direction: Direction) : Point {
         const snakesHead: Point = disposition[disposition.length - 1];
         let x = snakesHead.x;
         let y = snakesHead.y;
@@ -51,19 +60,19 @@ export function createSnake(boardCols: number, boardRows: number) : Snake {
         if(isBoardArea(p)) {
             return p;
         } else {
-            if(x >= boardCols)     p.x = 0;
-            if(y >= boardRows)    p.y = 0;
-            if(x < 0)               p.x = boardCols - 1;
-            if(y < 0)               p.y = boardRows - 1;
+            if(x >= cols)     p.x = 0;
+            if(y >= rows)    p.y = 0;
+            if(x < 0)               p.x = cols - 1;
+            if(y < 0)               p.y = rows - 1;
             return p;
         }
     }
 
-    function moveSnake(direction: Direction, actualLength : number) : boolean {
-        const p = newPoint(direction);
+    function moveSnake(direction: Direction) : boolean {
+        const p = nextPoint(direction);
         if(!isSelfBody(p)) {
             disposition.push(p);
-            while(disposition.length > actualLength) {
+            while(disposition.length > length) {
                 disposition.shift();
             }
             return true;
@@ -73,7 +82,7 @@ export function createSnake(boardCols: number, boardRows: number) : Snake {
     }
 
     function isBoardArea(p: Point) : boolean {
-        return p.x >= 0 && p.x < boardCols && p.y >= 0 && p.y < boardRows;
+        return p.x >= 0 && p.x < cols && p.y >= 0 && p.y < rows;
     }
 
     function isSelfBody(p: Point) : boolean {
@@ -85,23 +94,26 @@ export function createSnake(boardCols: number, boardRows: number) : Snake {
 
     function isPossibleDirection(direction : Direction) : boolean {
         if(length < 2) return true;
-        const point = newPoint(direction);
+        const point = nextPoint(direction);
         const beforePoint = disposition[disposition.length - 2];
         return point.x !== beforePoint.x || point.y !== beforePoint.y;
     }
 
     return {
-        length,
-        disposition,
-        moveSnake: function(direction){return moveSnake(direction, this.length)},
+        getLength: () => length,
+        getDisposition: () => disposition,
+        moveSnake: function(direction){
+            return moveSnake(direction)
+        },
         isPossibleDirection: (direction) => isPossibleDirection(direction),
         getCurrentPoint: () => disposition[disposition.length - 1],
-        growth: function(){this.length++}
+        growth: () => {length++},
+        reborn: () => reborn()
     };
 }
 
-
-export function DrawSnake(snake: Snake) : ReactElement {
+export function DrawSnake(params : {snakeDisposition: Array<Point>}) : ReactElement {
+    const {snakeDisposition} = params;
     const l = BOARD.CELL_LENGTH; // width|height of 1 field
     let lineBegin: Point|null = null;
     let lineEnd: Point|null = null;
@@ -125,7 +137,7 @@ export function DrawSnake(snake: Snake) : ReactElement {
         }
     }
     function pushEye() {
-        const p = snake.disposition[snake.disposition.length - 1];
+        const p = snakeDisposition[snakeDisposition.length - 1];
         if(p) {
             const style = {
                 top: p.y * l + 2,
@@ -135,8 +147,8 @@ export function DrawSnake(snake: Snake) : ReactElement {
         }
     }
     let prevPoint;
-    for(let i = snake.disposition.length - 1; i >= 0 ; i--) {
-        const point = snake.disposition[i];
+    for(let i = snakeDisposition.length - 1; i >= 0 ; i--) {
+        const point = snakeDisposition[i];
         if(!lineBegin) {
             lineBegin = point;
         } else if(prevPoint && !isNeighboringPoints(prevPoint, point)){
@@ -158,7 +170,7 @@ export function DrawSnake(snake: Snake) : ReactElement {
         prevPoint = point;
     }
     // draw last part of body
-    if(snake.disposition.length === 1) {
+    if(snakeDisposition.length === 1) {
         lineEnd = lineBegin;
     }
     if(lineEnd !== null) {

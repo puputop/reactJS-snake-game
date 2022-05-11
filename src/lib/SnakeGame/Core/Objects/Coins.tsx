@@ -1,6 +1,6 @@
 import {Point, Snake} from "./Snake";
 import {ReactElement} from "react";
-import {BOARD, COINS} from "./config";
+import {BOARD, COINS} from "../../config";
 
 export type Coin = {
     point: Point,
@@ -11,8 +11,9 @@ export type Coin = {
 
 export function createCoin(boardCols: number, boardRows: number, gameDuration: number, snake: Snake, coins: Array<Coin>) : Coin {
     function isVacantPoint(p : Point) : boolean {
-        for(let i = 0;i < snake.disposition.length; i++) {
-            const sp = snake.disposition[i];
+        const disposition = snake.getDisposition();
+        for(let i = 0;i < disposition.length; i++) {
+            const sp = disposition[i];
             if(p.x === sp.x && p.y === sp.y) return false;
         }
         for(let i = 0;i < coins.length; i++) {
