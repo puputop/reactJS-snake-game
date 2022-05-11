@@ -1,15 +1,24 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
+import Game from "./lib/arcade/Game";
+import {BOARD} from "./lib/arcade/config";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+
+const styleApp = {
+    display : 'flex',
+    width : '100%',
+    justifyContent : 'center'
+}
 root.render(
   <React.StrictMode>
-    <App />
+      <div style={styleApp}>
+          <Game name="SNAKE 1.0" cols={BOARD.COLS} rows={BOARD.ROWS} />
+      </div>
   </React.StrictMode>
 );
 

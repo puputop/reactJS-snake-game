@@ -24,7 +24,7 @@ interface IGameState {
 const enum menuActions {NEW_GAME, PAUSE, PLAY, STOP}
 const enum gameStatus {PLAY, STOP, PAUSE}
 
-export class Game extends React.Component<IGameProps, IGameState> {
+class Game extends React.Component<IGameProps, IGameState> {
 
     gameDiv: React.RefObject<any>;
     snakeStepTimer: NodeJS.Timer | undefined = undefined
@@ -261,3 +261,5 @@ export class Game extends React.Component<IGameProps, IGameState> {
         </div>
     }
 }
+
+export default Game;
