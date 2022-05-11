@@ -2,8 +2,6 @@ import {Snake} from "./Snake";
 import {ReactElement} from "react";
 import {BOARD, COINS} from "../../config";
 import Point from "./Point";
-import game from "../../Game";
-import point from "./Point";
 
 export type Coin = {
     point: Point,

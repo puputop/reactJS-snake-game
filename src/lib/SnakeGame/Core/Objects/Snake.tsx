@@ -12,7 +12,7 @@ export type Snake = {
     getBeginPoint: () => Point,
     growth: () => void, // length++
     reborn: () => void,  // snake params to default (for new game)
-    draw: () => ReactElement
+    Draw: () => ReactElement
 };
 
 export enum Direction {left, right, top, bottom}
@@ -101,7 +101,7 @@ export function createSnake(boardParams : {cols: number, rows: number}) : Snake 
         getBeginPoint: () => disposition[disposition.length - 1],
         growth: () => {length++},
         reborn: () => reborn(),
-        draw: () => DrawSnake({snakeDisposition : disposition}),
+        Draw: () => DrawSnake({snakeDisposition : disposition}),
     };
 }
 

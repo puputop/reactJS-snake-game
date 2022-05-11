@@ -2,11 +2,18 @@ import React from 'react';
 import './style/game.css';
 import Board from "./Core/Interface/Board";
 import {createSnake, Direction, Snake} from "./Core/Objects/Snake";
-import {COINS, pointsPerStep, SNAKE} from "./config";
-import {Coin, CoinsFarm, createCoin, createCoinsFarm, DrawCoins} from "./Core/Objects/Coins";
+import {pointsPerStep, SNAKE} from "./config";
+import {CoinsFarm, createCoinsFarm} from "./Core/Objects/Coins";
 import Menu, {menuActions} from "./Core/Interface/Menu";
 import Score from "./Core/Interface/Score";
+/*
+TODO Вынести логику в игру и сделать максимально простую структуру
+со змейкой по аналогии с монетами
 
+сделать максимально читаемую структуру - "змейка съела монету"
+
+    поправить дизайн
+ */
 interface IGameProps {
     name: string,
     cols: number,
@@ -14,11 +21,9 @@ interface IGameProps {
 }
 
 interface IGameState {
-    // snake: Snake,
-    coins: Coin[],
     status: gameStatus,
     points: number,
-    gameDuration: number, // milliseconds
+    gameDuration: number, // milliseconds // TODO remove from the state
 }
 
 
@@ -28,7 +33,6 @@ class Game extends React.Component<IGameProps, IGameState> {
 
     gameBoardDiv: React.RefObject<HTMLDivElement>
     snakeStepTimer: NodeJS.Timer | undefined = undefined
-    coinRespawnTimer: NodeJS.Timer | undefined = undefined
     currentDirection: Direction = Direction.right
     startGameTime: number = new Date().getTime()
     pauseDuration: number = 0
@@ -42,8 +46,6 @@ class Game extends React.Component<IGameProps, IGameState> {
         const {cols, rows} = props;
         this.snake = createSnake({cols, rows});
         this.state = {
-            // snake: createSnake({cols, rows}),
-            coins: [],
             status: gameStatus.STOP,
             points: 0,
             gameDuration: 0,
@@ -52,7 +54,6 @@ class Game extends React.Component<IGameProps, IGameState> {
         this.focusDiv = this.focusDiv.bind(this)
         this.onMenuHandle = this.onMenuHandle.bind(this)
         this.snakeMove = this.snakeMove.bind(this)
-        this.respawnCoin = this.respawnCoin.bind(this)
         this.gameBoardDiv = React.createRef();
         setInterval(() => this.focusDiv(), 200)
         this.coinsFarm = createCoinsFarm({
@@ -137,7 +138,6 @@ class Game extends React.Component<IGameProps, IGameState> {
                 if (prevState.status === gameStatus.STOP) {
                     this.snake.reborn();
                     return {
-                        coins: [],
                         status: gameStatus.PLAY,
                         points: 0,
                         speed: SNAKE.SPEED.INITIAL,
@@ -147,9 +147,7 @@ class Game extends React.Component<IGameProps, IGameState> {
             });
             // start timers
             if (this.snakeStepTimer) clearTimeout(this.snakeStepTimer);
-            if (this.coinRespawnTimer) clearTimeout(this.coinRespawnTimer);
             this.snakeStepTimer = setTimeout(this.snakeMove, this.getSpeed());
-            this.coinRespawnTimer = setTimeout(this.respawnCoin, 1000);
             this.coinsFarm.empty().start();
         }
     }
@@ -158,7 +156,6 @@ class Game extends React.Component<IGameProps, IGameState> {
         if(this.state.status !== gameStatus.STOP) {
             this.coinsFarm.stop();
             if (this.snakeStepTimer) clearTimeout(this.snakeStepTimer);
-            if (this.coinRespawnTimer) clearTimeout(this.coinRespawnTimer);
             this.setState<never>(() => ({status: gameStatus.STOP}))
         }
     }
@@ -183,26 +180,12 @@ class Game extends React.Component<IGameProps, IGameState> {
     snakeMove(): void {
         if (this.state.status === gameStatus.PLAY) {
             if (this.snake.moveSnake(this.currentDirection)) {
-                const snakeNewPoint = this.snake.getBeginPoint();
-                // coins
+                // coinsFarm
                 const snakeBegin = this.snake.getBeginPoint();
                 if(this.coinsFarm.hasCoinThere(snakeBegin)) {
                     this.coinsFarm.clearPoint(snakeBegin);
                     this.snake.growth();
                 }
-                const removeIndexes : number[] = [];
-                this.state.coins.forEach((coin, i) => {
-                    if (coin.point.x === snakeNewPoint.x && coin.point.y === snakeNewPoint.y) {
-                        // 1. find grabbing coin
-                        removeIndexes.push(i);
-                        this.snake.growth();
-                    } else if (coin.isAlive(this.state.gameDuration)) {
-                        // 2. find coins with expired lifetime
-                        removeIndexes.push(i);
-                    }
-                })
-                // remove finding coins from the end of array
-                removeIndexes.reverse().forEach((index) => {this.state.coins.splice(index, 1)})
                 // move Snake
                 this.setState<never>((prevState) => ({
                     points: prevState.points + pointsPerStep(this.snake.getLength(), this.getSpeed()),
@@ -236,23 +219,6 @@ class Game extends React.Component<IGameProps, IGameState> {
         }
     }
 
-    respawnCoin(): void {
-        return;
-        // if (this.state.status === gameStatus.PLAY) {
-        //     this.state.coins.push(
-        //         createCoin(this.props.cols, this.props.rows, this.state.gameDuration, this.snake, this.state.coins)
-        //     )
-        // }
-        // if(this.state.status !== gameStatus.STOP) {
-        //     if (this.coinRespawnTimer) {
-        //         clearTimeout(this.coinRespawnTimer);
-        //     }
-        //     const k = this.getSpeed() / SNAKE.SPEED.INITIAL;
-        //     const timeout = Math.round((COINS.RESPAWN_INTERVAL_MIN + Math.random() * (COINS.RESPAWN_INTERVAL_MAX - COINS.RESPAWN_INTERVAL_MIN)) * k);
-        //     this.coinRespawnTimer = setTimeout(this.respawnCoin, timeout);
-        // }
-    }
-
     render() {
         let workAreaClass = '';
         if (this.state.status === gameStatus.STOP) {
@@ -269,9 +235,7 @@ class Game extends React.Component<IGameProps, IGameState> {
                 <div id='board-active-area' className={this.state.status === gameStatus.STOP ? workAreaClass : ''}
                      ref={this.gameBoardDiv} tabIndex={0} onKeyDown={(e) => this.keyPress(e)}>
                     <Board cols={this.props.cols} rows={this.props.rows}/>
-                    <this.snake.draw />
-                    {/*<DrawCoins coins={this.state.coins} gameDuration={this.state.gameDuration}/>*/}
-                    {/*{this.coinsFarm.Draw(this.state.gameDuration)}*/}
+                    <this.snake.Draw />
                     <this.coinsFarm.Draw gameDuration={this.state.gameDuration} />
                 </div>
             </div>
