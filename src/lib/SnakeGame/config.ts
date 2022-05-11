@@ -23,9 +23,9 @@ export const SNAKE = {
 export const COINS = {
     // respawn interval actual for begin game and will be less, when snake speed will be growth
     RESPAWN_INTERVAL_MIN:   300     as number,  // milliseconds
-    RESPAWN_INTERVAL_MAX:   4000    as number,  // milliseconds
-    LIFE_TIME_MIN:          5000    as number,  // milliseconds
-    LIFE_TIME_MAX:          10000   as number,  // milliseconds
+    RESPAWN_INTERVAL_MAX:   1000    as number,  // milliseconds 4000
+    LIFETIME_MIN:          2000    as number,  // milliseconds 5000
+    LIFETIME_MAX:          6000   as number,  // milliseconds 10000
 }
 
 // Scoring formula
