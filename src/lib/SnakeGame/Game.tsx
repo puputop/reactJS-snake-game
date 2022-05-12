@@ -1,11 +1,13 @@
 import React from 'react';
 import './style/game.css';
 import Board from "./Core/Interface/Board";
-import {createSnake, Direction, Snake} from "./Core/Objects/Snake";
+import {createSnake, createSnake2, Snake, Snake2} from "./Core/Objects/Snake";
 import {pointsPerStep, SNAKE} from "./config";
 import {CoinsFarm, createCoinsFarm} from "./Core/Objects/Coins";
 import Menu, {menuActions} from "./Core/Interface/Menu";
 import Score from "./Core/Interface/Score";
+import {Direction} from "./Core/Objects/Point";
+
 /*
 TODO Вынести логику в игру и сделать максимально простую структуру
 со змейкой по аналогии с монетами
@@ -23,7 +25,6 @@ interface IGameProps {
 interface IGameState {
     status: gameStatus,
     points: number,
-    gameDuration: number, // milliseconds // TODO remove from the state
 }
 
 
@@ -31,14 +32,17 @@ export const enum gameStatus {PLAY, STOP, PAUSE}
 
 class Game extends React.Component<IGameProps, IGameState> {
 
+    snake: Snake
+    snake2: Snake2
+    coinsFarm : CoinsFarm
     gameBoardDiv: React.RefObject<HTMLDivElement>
     snakeStepTimer: NodeJS.Timer | undefined = undefined
     currentDirection: Direction = Direction.right
     startGameTime: number = new Date().getTime()
     pauseDuration: number = 0
     pauseStartTime: number = 0
-    snake: Snake
-    coinsFarm : CoinsFarm
+    finishGameTime: number = 0
+
 
 
     constructor(props: IGameProps) {
@@ -48,21 +52,25 @@ class Game extends React.Component<IGameProps, IGameState> {
         this.state = {
             status: gameStatus.STOP,
             points: 0,
-            gameDuration: 0,
         };
         this.keyPress = this.keyPress.bind(this)
         this.focusDiv = this.focusDiv.bind(this)
         this.onMenuHandle = this.onMenuHandle.bind(this)
         this.snakeMove = this.snakeMove.bind(this)
         this.gameBoardDiv = React.createRef();
-        setInterval(() => this.focusDiv(), 200)
         this.coinsFarm = createCoinsFarm({
             boardCols: cols,
             boardRows: rows,
             snake: this.snake,
-            getGameDuration: ()=>this.getActualGameDuration(),
+            getGameDuration: ()=>this.getGameDuration(),
             updateCallback: ()=>{this.setState({})}
         });
+        this.snake2 = createSnake2(
+            {cols, rows},
+            (alive) => {this.setState({})},
+            this.coinsFarm
+        )
+        setInterval(() => this.focusDiv(), 200)
     }
 
     componentDidMount() : void {
@@ -80,7 +88,7 @@ class Game extends React.Component<IGameProps, IGameState> {
     }
 
     getSpeed(): number {
-        const speed = SNAKE.SPEED.INITIAL / (1 + this.state.gameDuration / 1000 / SNAKE.SPEED.GROWTH_INTERVAL * SNAKE.SPEED.GROWTH_STEP / 100);
+        const speed = SNAKE.SPEED.INITIAL / (1 + this.getGameDuration() / 1000 / SNAKE.SPEED.GROWTH_INTERVAL * SNAKE.SPEED.GROWTH_STEP / 100);
         return Math.max(speed, SNAKE.SPEED.MINIMAL);
     }
 
@@ -92,12 +100,16 @@ class Game extends React.Component<IGameProps, IGameState> {
             const right = [68, 39];
             const keyCode = e.keyCode;
             if (up.indexOf(keyCode) > -1) {
+                this.snake2.setDirection(Direction.top)
                 this.setDirection(Direction.top);
             } else if (down.indexOf(keyCode) > -1) {
+                this.snake2.setDirection(Direction.bottom)
                 this.setDirection(Direction.bottom);
             } else if (left.indexOf(keyCode) > -1) {
+                this.snake2.setDirection(Direction.left)
                 this.setDirection(Direction.left);
             } else if (right.indexOf(keyCode) > -1) {
+                this.snake2.setDirection(Direction.right)
                 this.setDirection(Direction.right);
             }
         }
@@ -131,9 +143,15 @@ class Game extends React.Component<IGameProps, IGameState> {
 
     gameNewGame() : void {
         if(this.state.status === gameStatus.STOP) {
+
+            this.snake2.toInitial()
+            this.snake2.start()
+
             this.currentDirection = Direction.right;
             this.pauseDuration = 0;
             this.startGameTime = (new Date()).getTime();
+            this.finishGameTime = 0;
+            this.pauseStartTime = 0;
             this.setState<never>((prevState) => {
                 if (prevState.status === gameStatus.STOP) {
                     this.snake.reborn();
@@ -141,7 +159,6 @@ class Game extends React.Component<IGameProps, IGameState> {
                         status: gameStatus.PLAY,
                         points: 0,
                         speed: SNAKE.SPEED.INITIAL,
-                        gameDuration: 0,
                     };
                 }
             });
@@ -155,6 +172,8 @@ class Game extends React.Component<IGameProps, IGameState> {
     gameStop() : void {
         if(this.state.status !== gameStatus.STOP) {
             this.coinsFarm.stop();
+            this.snake2.stop();
+            this.finishGameTime = new Date().getTime()
             if (this.snakeStepTimer) clearTimeout(this.snakeStepTimer);
             this.setState<never>(() => ({status: gameStatus.STOP}))
         }
@@ -163,6 +182,7 @@ class Game extends React.Component<IGameProps, IGameState> {
     gamePause() : void {
         if(this.state.status === gameStatus.PLAY) {
             this.pauseStartTime = new Date().getTime()
+            this.snake2.stop();
             this.coinsFarm.stop();
             this.setState<never>(() => ({status: gameStatus.PAUSE}))
         }
@@ -171,6 +191,7 @@ class Game extends React.Component<IGameProps, IGameState> {
     gamePlay() : void {
         if(this.state.status === gameStatus.PAUSE) {
             this.pauseDuration += new Date().getTime() - this.pauseStartTime
+            this.snake2.start();
             this.pauseStartTime = 0;
             this.coinsFarm.start();
             this.setState<never>(() => ({status: gameStatus.PLAY}))
@@ -189,7 +210,6 @@ class Game extends React.Component<IGameProps, IGameState> {
                 // move Snake
                 this.setState<never>((prevState) => ({
                     points: prevState.points + pointsPerStep(this.snake.getLength(), this.getSpeed()),
-                    gameDuration: new Date().getTime() - this.startGameTime - this.pauseDuration,
                 }));
             } else {
                 // the end of game
@@ -204,7 +224,7 @@ class Game extends React.Component<IGameProps, IGameState> {
         }
     }
 
-    getActualGameDuration() : number {
+    getGameDuration() : number {
         switch(this.state.status) {
             case gameStatus.PLAY:
                 return new Date().getTime() - this.startGameTime - this.pauseDuration;
@@ -214,8 +234,8 @@ class Game extends React.Component<IGameProps, IGameState> {
                 } else {
                     return new Date().getTime() - this.startGameTime - this.pauseDuration;
                 }
-            default:
-                return this.state.gameDuration;
+            case gameStatus.STOP:
+                return this.finishGameTime - this.startGameTime - this.pauseDuration;
         }
     }
 
@@ -224,6 +244,7 @@ class Game extends React.Component<IGameProps, IGameState> {
         if (this.state.status === gameStatus.STOP) {
             workAreaClass = 'game-over';
         }
+        const gameDuration = this.getGameDuration();
 
         return <div id='board-wrapper'>
             <div key={1} className='board-menu-side'>
@@ -236,13 +257,14 @@ class Game extends React.Component<IGameProps, IGameState> {
                      ref={this.gameBoardDiv} tabIndex={0} onKeyDown={(e) => this.keyPress(e)}>
                     <Board cols={this.props.cols} rows={this.props.rows}/>
                     <this.snake.Draw />
-                    <this.coinsFarm.Draw gameDuration={this.state.gameDuration} />
+                    <this.snake2.Draw />
+                    <this.coinsFarm.Draw gameDuration={gameDuration} />
                 </div>
             </div>
             <div key={3} className='board-score-side'>
                 <p className='board-title'>SCORE</p>
                 <Score points={this.state.points}
-                       gameDuration={this.state.gameDuration}
+                       gameDuration={gameDuration}
                        snakeSpeed={this.getSpeed()}
                        snakeLength={this.snake.getLength()}/>
             </div>

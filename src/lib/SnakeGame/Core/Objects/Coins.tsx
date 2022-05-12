@@ -16,11 +16,11 @@ export type CoinsFarm = {
     stop: () => CoinsFarm,
     empty: () => CoinsFarm,
     hasCoinThere: (point: Point) => boolean,
-    clearPoint: (point : Point) => void,
-    setRespawnIntervalMin: (milliseconds: number) => void,
-    setRespawnIntervalMax: (milliseconds: number) => void,
-    setLifetimeMin: (milliseconds: number) => void,
-    setLifetimeMax: (milliseconds: number) => void,
+    clearPoint: (point : Point) => CoinsFarm,
+    setRespawnIntervalMin: (milliseconds: number) => CoinsFarm,
+    setRespawnIntervalMax: (milliseconds: number) => CoinsFarm,
+    setLifetimeMin: (milliseconds: number) => CoinsFarm,
+    setLifetimeMax: (milliseconds: number) => CoinsFarm,
 }
 
 /**
@@ -38,7 +38,7 @@ export function createCoinsFarm(params: { boardCols: number, boardRows: number, 
     let workTimer: NodeJS.Timer | null = null;
     let lifetimeTimers: NodeJS.Timer[] = [];
 
-    function getBurnDelay(): number {
+    function getBornDelay(): number {
         const k = 1; // TODO // const k = this.getSpeed() / SNAKE.SPEED.INITIAL;
         return Math.round((respawnIntervalMin + Math.random() * (respawnIntervalMax - respawnIntervalMin)) * k);
     }
@@ -70,14 +70,14 @@ export function createCoinsFarm(params: { boardCols: number, boardRows: number, 
             addLifetimeTimer(newCoin);
             coins.push(newCoin);
             if (workTimer) clearTimeout(workTimer);
-            workTimer = setTimeout(work, getBurnDelay());
+            workTimer = setTimeout(work, getBornDelay());
         }
     }
 
     const start = () => {
         if (!isWork) {
             isWork = true;
-            workTimer = setTimeout(work, getBurnDelay());
+            workTimer = setTimeout(work, getBornDelay());
             coins.forEach((coin) => {addLifetimeTimer(coin)});
         }
     }
@@ -110,13 +110,14 @@ export function createCoinsFarm(params: { boardCols: number, boardRows: number, 
             empty();
             return this
         },
-        clearPoint: (point) => {
+        clearPoint: function (point) {
             const {x, y} = point;
             coins.forEach((coin, i) => {
                 if(coin.point.x === x && coin.point.y === y) {
                     coins.splice(i, 1);
                 }
             });
+            return this;
         },
         Draw: () => <DrawCoins coins={coins} gameDuration={getGameDuration()}/>,
         hasCoinThere: (point: Point) => {
@@ -125,17 +126,21 @@ export function createCoinsFarm(params: { boardCols: number, boardRows: number, 
             }
             return false;
         },
-        setRespawnIntervalMin: (milliseconds: number) => {
+        setRespawnIntervalMin: function (milliseconds: number) {
             respawnIntervalMin = milliseconds
+            return this;
         },
-        setRespawnIntervalMax: (milliseconds: number) => {
+        setRespawnIntervalMax: function (milliseconds: number) {
             respawnIntervalMax = milliseconds
+            return this;
         },
-        setLifetimeMin: (milliseconds: number) => {
+        setLifetimeMin: function (milliseconds: number) {
             lifetimeMin = milliseconds
+            return this
         },
-        setLifetimeMax: (milliseconds: number) => {
+        setLifetimeMax: function (milliseconds: number) {
             lifetimeMax = milliseconds
+            return this
         },
     }
 }

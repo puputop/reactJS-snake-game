@@ -1,4 +1,6 @@
 // BOARD setting
+import Point, {Direction} from "./Core/Objects/Point";
+
 export const BOARD = {
     CELL_LENGTH: 20 as number,  // width & height cell of board (if you want to change - need correct CSS (game.css))
     ROWS: 20 as number, // cells per row
@@ -8,10 +10,11 @@ export const BOARD = {
 export const SNAKE = {
     INITIAL: {
         LENGTH: 5 as number,
-        POSITION: {
+        POSITION : {
             x: 0 as number,
             y: 0 as number
-        }
+        } as Point,
+        DIRECTION: Direction.right
     },
     SPEED: {
         INITIAL:            250 as number,  // milliseconds 250
