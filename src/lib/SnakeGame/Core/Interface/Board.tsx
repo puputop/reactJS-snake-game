@@ -1,7 +1,12 @@
 import {ReactElement} from "react";
 
-function Board(props: {cols: number, rows: number}) : ReactElement  {
-    const {cols, rows} = props;
+export type BoardSize = {
+    cols : number,
+    rows : number
+}
+
+function Board(props: {board : BoardSize}) : ReactElement  {
+    const {cols, rows} = props.board;
     const board = [];
     for(let x = 0; x < rows; x++) {
         const line = [];

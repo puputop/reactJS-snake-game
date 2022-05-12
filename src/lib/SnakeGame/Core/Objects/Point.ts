@@ -7,6 +7,14 @@ type Point = {
     y: number
 };
 
+export function indexOfPoint(point : Point, points : Point[]) : number {
+    for(let i = 0; i < points.length; i++) {
+        const {x, y} = points[i]
+        if(point.x === x && point.y === y) return i
+    }
+    return -1
+}
+
 export enum Direction {left, right, top, bottom}
 
 

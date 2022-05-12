@@ -17,7 +17,7 @@ const styleApp = {
 root.render(
   <React.StrictMode>
       <div style={styleApp}>
-          <Game name="SNAKE 1.0" cols={BOARD.COLS} rows={BOARD.ROWS} />
+          <Game name="SNAKE 1.0" board={{cols : BOARD.COLS, rows : BOARD.ROWS}} />
       </div>
   </React.StrictMode>
 );

@@ -2,28 +2,31 @@ import {ReactElement} from "react";
 import {BOARD, SNAKE} from "../../config";
 import Point, {Direction, isInlinePoints, isNeighboringPoints, nextPoint} from "./Point";
 import {CoinsFarm} from "./Coins";
+import {BoardSize} from "../Interface/Board";
 
-export type Snake2 = {
-    toInitial: () => Snake2,
-    start: () => Snake2,
-    stop: () => Snake2,
-    growth: () => Snake2, // length++
-    setDirection: (direction: Direction) => Snake2,
-    setSpeed: (speed : number) => Snake2,
+export type Snake = {
+    setCoinsFarm: (coinsFarm: CoinsFarm) => Snake,
+    toInitial: () => Snake,
+    start: () => Snake,
+    stop: () => Snake,
+    growth: () => Snake, // length++
+    setDirection: (direction: Direction) => Snake,
+    setSpeed: (speed : number) => Snake,
     Draw: () => ReactElement,
+    getDisposition: () => Array<Point>,
+    getLength: () => number
 }
 
-export function createSnake2(board: {cols: number, rows: number}, onChangeCallback : (isAlive : boolean) => void, coinFarm : CoinsFarm) : Snake2 {
-    // const {boardCols : cols, boardRows : rows} = params
+export function createSnake(board: BoardSize, onChangeCallback : (isAlive : boolean) => void) : Snake {
     let currentSpeed: number
     let currentDirection: Direction
     let length: number
     let disposition: Array<Point>
+    let currentCoinsFarm: CoinsFarm
 
     let workTimer: NodeJS.Timer | null = null
 
     toInitial()
-
 
     function toInitial() : void {
         currentSpeed = SNAKE.SPEED.INITIAL
@@ -37,11 +40,15 @@ export function createSnake2(board: {cols: number, rows: number}, onChangeCallba
         }
     }
 
-    function isAlive() : boolean {
+    const isAlive = () : boolean => {
+        const p = disposition[disposition.length - 1]
+        for(let i = 0; i < disposition.length - 1; i++) {
+            if(disposition[i].x === p.x && disposition[i].y === p.y) return false;
+        }
         return true;
     }
 
-    function isPossibleDirection(direction : Direction) : boolean {
+    const isPossibleDirection = (direction : Direction) : boolean => {
         if(length < 2) return true;
         const snakesHead: Point = disposition[disposition.length - 1];
         const beforePoint = disposition[disposition.length - 2];
@@ -57,9 +64,9 @@ export function createSnake2(board: {cols: number, rows: number}, onChangeCallba
             if(disposition.length > length) {
                 disposition.splice(0, disposition.length - length)
             }
-            if(coinFarm.hasCoinThere(newPoint)) {
+            if(currentCoinsFarm && currentCoinsFarm.hasCoinThere(newPoint)) {
                 length++;
-                coinFarm.clearPoint(newPoint)
+                currentCoinsFarm.clearPoint(newPoint)
             }
             if(workTimer) clearTimeout(workTimer)
             workTimer = setTimeout(work, currentSpeed)
@@ -68,13 +75,17 @@ export function createSnake2(board: {cols: number, rows: number}, onChangeCallba
     }
 
     return {
+        setCoinsFarm: function (coinsFarm: CoinsFarm) {
+            currentCoinsFarm = coinsFarm
+            return this
+        },
         toInitial: function() {
             toInitial()
-            return this;
+            return this
         },
         start: function () {
             if(workTimer) clearTimeout(workTimer)
-            workTimer = setTimeout(work, currentSpeed)
+            work()
             return this
         },
         stop: function () {
@@ -88,10 +99,12 @@ export function createSnake2(board: {cols: number, rows: number}, onChangeCallba
             length++
             return this
         },
+        getDisposition: () => disposition,
+        getLength: () => length,
         setDirection: function (direction: Direction) {
-            if(isPossibleDirection(direction)) {
+            if(direction !== currentDirection && isPossibleDirection(direction)) {
                 currentDirection = direction
-                if(workTimer) {
+                if (workTimer) {
                     clearTimeout(workTimer)
                     work()
                 }
@@ -102,80 +115,8 @@ export function createSnake2(board: {cols: number, rows: number}, onChangeCallba
             currentSpeed = speed
             return this
         },
-        Draw: function () {
-            return DrawSnake({snakeDisposition : disposition})
-        }
+        Draw: () => DrawSnake({snakeDisposition : disposition})
     }
-}
-
-export type Snake = {
-
-    getLength: () => number,
-    getDisposition: () => Array<Point>,
-    moveSnake: (direction: Direction) => boolean
-    isPossibleDirection: (direction: Direction) => boolean
-    getBeginPoint: () => Point,
-    growth: () => void, // length++
-    reborn: () => void,  // snake params to default (for new game)
-    Draw: () => ReactElement
-};
-
-export function createSnake(board : {cols: number, rows: number}) : Snake {
-    let disposition : Array<Point> = [];
-    let length : number = 0;
-    reborn();
-
-    function reborn() : void {
-        disposition = [];
-        length = SNAKE.INITIAL.LENGTH;
-        const y = SNAKE.INITIAL.POSITION.y;
-        for(let x = SNAKE.INITIAL.POSITION.x; x < length; x++) {
-            disposition.push({x, y});
-        }
-    }
-
-    function nextPointLocal(direction: Direction) : Point {
-        const snakesHead: Point = disposition[disposition.length - 1];
-        return nextPoint(snakesHead, direction, board)
-    }
-
-    function moveSnake(direction: Direction) : boolean {
-        const p = nextPointLocal(direction);
-        if(!isSelfBody(p)) {
-            disposition.push(p);
-            while(disposition.length > length) {
-                disposition.shift();
-            }
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    function isSelfBody(p: Point) : boolean {
-        for(let i = 0; i < disposition.length; i++) {
-            if(disposition[i].x === p.x && disposition[i].y === p.y) return true;
-        }
-        return false;
-    }
-
-    function isPossibleDirection(direction : Direction) : boolean {
-        if(length < 2) return true;
-        const point = nextPointLocal(direction);
-        const beforePoint = disposition[disposition.length - 2];
-        return point.x !== beforePoint.x || point.y !== beforePoint.y;
-    }
-
-    return {
-        getLength: () => length,
-        getDisposition: () => disposition,
-        moveSnake: (direction) => moveSnake(direction),
-        isPossibleDirection: (direction) => isPossibleDirection(direction),
-        getBeginPoint: () => disposition[disposition.length - 1],
-        growth: () => {length++},
-        reborn: () => reborn(),
-        Draw: () => DrawSnake({snakeDisposition : disposition}),
-    };
 }
 
 function DrawSnake(params : {snakeDisposition: Array<Point>}) : ReactElement {
