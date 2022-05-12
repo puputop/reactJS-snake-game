@@ -23,6 +23,7 @@ interface IGameProps {
 
 interface IGameState {
     status: gameStatus,
+    points: 0
 }
 
 
@@ -37,16 +38,16 @@ class Game extends React.Component<IGameProps, IGameState> {
     pauseDuration: number = 0
     pauseStartTime: number = 0
     finishGameTime: number = 0
-    points: number = 0
 
 
 
     constructor(props: IGameProps) {
         super(props);
-        const {board} = props;
         this.state = {
             status: gameStatus.STOP,
+            points: 0,
         };
+        const {board} = props;
         // bind
         this.keyPress = this.keyPress.bind(this)
         this.focusBoard = this.focusBoard.bind(this)
@@ -84,20 +85,29 @@ class Game extends React.Component<IGameProps, IGameState> {
 
     onChangeSnakeHandle(alive : boolean) :void {
         if(alive) {
-            this.snake.setSpeed(this.getSpeed())
+            const speed = this.getSnakeSpeed();
+            this.snake.setSpeed(speed)
+            this.coinsFarm.setAccelerationCoefficient(this.getCoinsFarmAccelerationCoefficient())
+            this.setState<never>((prevState) => ({
+                points: (prevState.points + pointsPerStep(this.snake.getLength(), speed))
+            }))
         } else {
             this.gameStop();
+            this.setState({})
         }
-        this.setState({})
     }
 
     onChangeCoinsFarmHandle() : void {
         this.setState({})
     }
 
-    getSpeed(): number {
+    getSnakeSpeed(): number {
         const speed = SNAKE.SPEED.INITIAL / (1 + this.getGameDuration() / 1000 / SNAKE.SPEED.GROWTH_INTERVAL * SNAKE.SPEED.GROWTH_STEP / 100);
         return Math.max(speed, SNAKE.SPEED.MINIMAL);
+    }
+
+    getCoinsFarmAccelerationCoefficient() : number {
+        return 1 / (SNAKE.SPEED.INITIAL / this.getSnakeSpeed())
     }
 
     keyPress(e: any) : void {
@@ -144,7 +154,6 @@ class Game extends React.Component<IGameProps, IGameState> {
                     return {
                         status: gameStatus.PLAY,
                         points: 0,
-                        speed: SNAKE.SPEED.INITIAL,
                     };
                 }
             });
@@ -220,9 +229,9 @@ class Game extends React.Component<IGameProps, IGameState> {
             </div>
             <div key={3} className='board-score-side'>
                 <p className='board-title'>SCORE</p>
-                <Score points={this.points}
+                <Score points={this.state.points}
                        gameDuration={gameDuration}
-                       snakeSpeed={this.getSpeed()}
+                       snakeSpeed={this.getSnakeSpeed()}
                        snakeLength={this.snake.getLength()}/>
             </div>
         </div>

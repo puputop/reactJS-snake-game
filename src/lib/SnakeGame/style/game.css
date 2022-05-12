@@ -10,6 +10,7 @@
     border-right: 20px solid #eee;
 }
 .menu-button{
+    text-align: center;
     font-weight: bold;
     cursor:not-allowed;
     display:block;
@@ -60,7 +61,7 @@
 .board-title {
     font-size: 12pt;
     font-family: Helvetica, serif;
-
+    text-align: center;
     border-bottom: 20px solid #eee;
     margin: 0;
     padding: 10px;
