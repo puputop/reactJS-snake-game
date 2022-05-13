@@ -1,6 +1,6 @@
 import {ReactElement} from "react";
 import {BOARD, COINS} from "../../config";
-import Point, {indexOfPoint} from "./Point";
+import Point, {indexOfPoint} from "../Point";
 import {BoardSize} from "../Interface/Board";
 import {Snake} from "./Snake";
 
@@ -104,7 +104,7 @@ export function createCoinsFarm(params: {board: BoardSize, getGameDuration: Func
             return {
                 point,
                 bornTime: getGameDuration(),
-                lifetime: COINS.LIFETIME_MIN + Math.random() * (COINS.LIFETIME_MAX - COINS.LIFETIME_MIN),
+                lifetime: lifetimeMin + Math.random() * (lifetimeMax - lifetimeMin),
             }
         } else {
             throw new Error('board is absolutely fill');

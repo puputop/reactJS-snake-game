@@ -1,6 +1,6 @@
 import {ReactElement} from "react";
 import {BOARD, SNAKE} from "../../config";
-import Point, {Direction, isInlinePoints, isNeighboringPoints, nextPoint} from "./Point";
+import Point, {Direction, nextPoint} from "../Point";
 import {CoinsFarm} from "./Coins";
 import {BoardSize} from "../Interface/Board";
 
@@ -121,64 +121,50 @@ export function createSnake(board: BoardSize, onChangeCallback : (isAlive : bool
 
 function DrawSnake(params : {snakeDisposition: Array<Point>}) : ReactElement {
     const {snakeDisposition} = params;
-    const l = BOARD.CELL_LENGTH; // width|height of 1 field
-    let lineBegin: Point|null = null;
-    let lineEnd: Point|null = null;
+    const cellLength = BOARD.CELL_LENGTH; // width|height of 1 field
     let sprites: ReactElement[] = [];
-    function pushSprint() {
-        if(lineBegin !== null && lineEnd !== null) {
-            const {x : x1, y : y1} = lineBegin;
-            const {x : x2, y : y2} = lineEnd;
-            const style = {
-                top: Math.min(y1, y2) * l + 2,
-                left: Math.min(x1, x2) * l + 2,
-                width: (Math.abs(x2 - x1) + 1) * l - 4,
-                height: (Math.abs(y2 - y1) + 1) * l - 4,
-            }
-            sprites.push(<span key={x1+'-'+x2+'-'+y1+'-'+y2} className='snake-body-section' style={style} />)
-            // clear
-            lineBegin = lineEnd;
-            lineEnd = null;
+    for(let i = 0; i < snakeDisposition.length ; i++) {
+
+        const point = snakeDisposition[i]
+        const style = {
+            top: point.y * cellLength,
+            left: point.x * cellLength,
         }
-    }
-    function pushEye() {
-        const point : Point = snakeDisposition[snakeDisposition.length - 1];
-        if(point) {
-            const style = {
-                top: point.y * l + 2,
-                left: point.x * l + 2,
-            };
-            sprites.push(<span key={-1} className='snake-head' style={style}/>)
-        }
-    }
-    let prevPoint;
-    for(let i = snakeDisposition.length - 1; i >= 0 ; i--) {
-        const point = snakeDisposition[i];
-        if(!lineBegin) {
-            lineBegin = point;
-        } else if(prevPoint && !isNeighboringPoints(prevPoint, point)){
-            if(!lineEnd) {
-                lineEnd = lineBegin;
-            }
-            pushSprint();
-            lineBegin = point;
-        } if(!lineEnd) {
-            lineEnd = point;
-        } else if(isInlinePoints([lineEnd, lineBegin, point])) {
-            lineEnd = point;
+        if(i === 0) {
+            // tail of the snake
+            const nextPoint = snakeDisposition[i+1];
+
+            sprites.push(<span className={'body tail ' + classOfTheDirection(point, [nextPoint])}
+                               style={style} key='tail'></span>)
+        } else if (i === snakeDisposition.length - 1) {
+            // head of the snake
+            const prevPoint = snakeDisposition[i-1];
+
+            sprites.push(<span className={'body head ' + classOfTheDirection(point, [prevPoint])}
+                               style={style} key='head'></span>)
         } else {
-            pushSprint();
-            lineEnd = point;
+            // middle part of the snake
+            const nextPoint = snakeDisposition[i+1];
+            const prevPoint = snakeDisposition[i-1];
+
+            sprites.push(<span className={'body ' + classOfTheDirection(point, [nextPoint, prevPoint])}
+                               style={style} key={i}></span>)
         }
-        prevPoint = point;
     }
-    // draw last part of body
-    if(snakeDisposition.length === 1) {
-        lineEnd = lineBegin;
-    }
-    if(lineEnd !== null) {
-        pushSprint()
-    }
-    pushEye();
     return <div className='snake'>{sprites.concat()}</div>;
+
+    function classOfTheDirection(point: Point, neighborsPoints: Point[]) : string {
+        const {x,y} = point;
+        let className : string[] = [];
+        neighborsPoints.forEach(function (p) {
+            if(x === p.x) {
+                if(p.y === y-1) className.push('top');
+                else if(p.y === y+1) className.push('bottom');
+            } else if (y === p.y) {
+                if(p.x === x-1) className.push('left');
+                else if(p.x === x+1) className.push('right');
+            }
+        })
+        return className.join(' ');
+    }
 }

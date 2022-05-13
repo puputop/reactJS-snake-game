@@ -1,5 +1,3 @@
-import exp from "constants";
-
 export default Point;
 
 type Point = {

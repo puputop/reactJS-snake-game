@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ReactElement} from 'react';
 import './style/game.css';
 import Board, {BoardSize} from "./Core/Interface/Board";
 import {createSnake, Snake} from "./Core/Objects/Snake";
@@ -6,7 +6,7 @@ import {pointsPerStep, SNAKE} from "./config";
 import {CoinsFarm, createCoinsFarm} from "./Core/Objects/Coins";
 import Menu, {menuActions} from "./Core/Interface/Menu";
 import Score from "./Core/Interface/Score";
-import {Direction} from "./Core/Objects/Point";
+import {Direction} from "./Core/Point";
 
 /*
 TODO Вынести логику в игру и сделать максимально простую структуру
@@ -55,6 +55,7 @@ class Game extends React.Component<IGameProps, IGameState> {
         this.onChangeSnakeHandle = this.onChangeSnakeHandle.bind(this)
         this.onChangeCoinsFarmHandle = this.onChangeCoinsFarmHandle.bind(this)
         this.getGameDuration = this.getGameDuration.bind(this)
+        this.GameOver = this.GameOver.bind(this)
         // ref
         this.gameBoardDiv = React.createRef();
         // create game objects
@@ -206,6 +207,16 @@ class Game extends React.Component<IGameProps, IGameState> {
         }
     }
 
+    GameOver() : ReactElement|null {
+        if(this.finishGameTime) {
+            return <div id='game-over'>
+                <p className='title'>GAME OVER</p>
+            </div>
+        } else {
+            return null;
+        }
+    }
+
     render() {
         let workAreaClass = '';
         if (this.state.status === gameStatus.STOP) {
@@ -225,6 +236,7 @@ class Game extends React.Component<IGameProps, IGameState> {
                     <Board board={this.props.board}/>
                     <this.snake.Draw />
                     <this.coinsFarm.Draw gameDuration={gameDuration} />
+                    <this.GameOver />
                 </div>
             </div>
             <div key={3} className='board-score-side'>
