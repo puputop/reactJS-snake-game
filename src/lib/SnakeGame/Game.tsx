@@ -4,7 +4,7 @@ import Board, {BoardSize} from "./Core/Interface/Board";
 import {createSnake, Snake} from "./Core/Objects/Snake";
 import {pointsPerStep, SNAKE} from "./config";
 import {CoinsFarm, createCoinsFarm} from "./Core/Objects/Coins";
-import Menu, {menuActions} from "./Core/Interface/Menu";
+import {menuActions, MenuButton} from "./Core/Interface/Menu";
 import Score from "./Core/Interface/Score";
 import {Direction} from "./Core/Point";
 
@@ -211,9 +211,20 @@ class Game extends React.Component<IGameProps, IGameState> {
         if(this.finishGameTime) {
             return <div id='game-over'>
                 <p className='title'>GAME OVER</p>
+                <div className='delay'>
+                    <Score points={this.state.points}
+                           gameDuration={this.getGameDuration()}
+                           snakeSpeed={this.getSnakeSpeed()}
+                           snakeLength={this.snake.getLength()}/>
+                    <MenuButton action={menuActions.NEW_GAME} onMenuHandle={this.onMenuHandle}/>
+                </div>
+            </div>
+        } else if(!this.startGameTime) {
+            return <div id='game-menu'>
+                <MenuButton action={menuActions.NEW_GAME} onMenuHandle={this.onMenuHandle}/>
             </div>
         } else {
-            return null;
+            return null
         }
     }
 
@@ -225,10 +236,10 @@ class Game extends React.Component<IGameProps, IGameState> {
         const gameDuration = this.getGameDuration();
 
         return <div id='board-wrapper'>
-            <div key={1} className='board-menu-side'>
-                <p className='board-title'>MENU</p>
-                <Menu status={this.state.status} onMenuHandle={this.onMenuHandle}/>
-            </div>
+            {/*<div key={1} className='board-menu-side'>*/}
+            {/*    <p className='board-title'>MENU</p>*/}
+            {/*    <Menu status={this.state.status} onMenuHandle={this.onMenuHandle}/>*/}
+            {/*</div>*/}
             <div key={2} className='board-game-side'>
                 <p className='board-title'>{this.props.name}</p>
                 <div id='board-active-area' className={this.state.status === gameStatus.STOP ? workAreaClass : ''}
@@ -239,13 +250,13 @@ class Game extends React.Component<IGameProps, IGameState> {
                     <this.GameOver />
                 </div>
             </div>
-            <div key={3} className='board-score-side'>
-                <p className='board-title'>SCORE</p>
-                <Score points={this.state.points}
-                       gameDuration={gameDuration}
-                       snakeSpeed={this.getSnakeSpeed()}
-                       snakeLength={this.snake.getLength()}/>
-            </div>
+            {/*<div key={3} className='board-score-side'>*/}
+            {/*    <p className='board-title'>SCORE</p>*/}
+            {/*    <Score points={this.state.points}*/}
+            {/*           gameDuration={gameDuration}*/}
+            {/*           snakeSpeed={this.getSnakeSpeed()}*/}
+            {/*           snakeLength={this.snake.getLength()}/>*/}
+            {/*</div>*/}
         </div>
     }
 }

@@ -8,14 +8,15 @@ function Score (props: {points: number, gameDuration: number, snakeSpeed: number
         {label: 'Speed', value: (Math.round(1000 / snakeSpeed * 10) / 10)},
         {label: 'Length', value: snakeLength},
     ]
-    return <span>
+    return <div id='score'>
+        <p className='game-title'>SNAKE</p>
         {scoreFields.map((score, index) => (
             <span key={index} className='score'>
                 <span className='label'>{score.label}</span>
                 <span className='value'>{score.value}</span>
             </span>
         ))}
-    </span>
+    </div>
 }
 
 export default Score;
