@@ -1,13 +1,5 @@
 #board-wrapper{
     display: flex;
-    flex-direction: row;
-    margin: 20px;
-    border: 20px solid #eee;
-}
-.board-menu-side{
-    display: flex;
-    flex-direction: column;
-    border-right: 20px solid #eee;
 }
 .menu-button{
     text-align: center;
@@ -30,15 +22,12 @@
 .menu-button.active:hover{
     background-color: aqua;
 }
-.board-score-side{
-    display: flex;
-    flex-direction: column;
-    border-left: 20px solid #eee;
 
+
+#score{
+    padding-bottom: 30px;
 }
-#score{}
 #score .game-title{
-    /*display:block;*/
     text-align: center;
     color:#fff;
     font-size:20pt;
@@ -62,17 +51,10 @@
     width:85px;
     font-weight: bold;
 }
+/* game */
 .board-game-side{
     display: flex;
     flex-direction: column;
-}
-.board-title {
-    font-size: 12pt;
-    font-family: Helvetica, serif;
-    text-align: center;
-    border-bottom: 20px solid #eee;
-    margin: 0;
-    padding: 10px;
 }
 #board-active-area {
     outline: none;
@@ -347,7 +329,7 @@
     animation: game-over-delay 4s linear;
 }
 @keyframes game-over-delay {
-    0%{opacity: 0}
+    0%{opacity: 0;}
     76%{opacity: 0}
     100%{opacity: 1}
 }

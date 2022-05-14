@@ -9,12 +9,11 @@ import Score from "./Core/Interface/Score";
 import {Direction} from "./Core/Point";
 
 /*
-TODO Вынести логику в игру и сделать максимально простую структуру
-со змейкой по аналогии с монетами
-
-сделать максимально читаемую структуру - "змейка съела монету"
-
-    поправить дизайн
+TODO раскидать стили по файлам
+отцентровать "Game Over" всплывающую в конце игры (разместить её отдельно от очков и другого поверх с absolute)
+почистить меню
+почистить стили очков
+добавить очки и время во время игры (полоской сверху)
  */
 interface IGameProps {
     name: string,
@@ -217,6 +216,8 @@ class Game extends React.Component<IGameProps, IGameState> {
                            snakeSpeed={this.getSnakeSpeed()}
                            snakeLength={this.snake.getLength()}/>
                     <MenuButton action={menuActions.NEW_GAME} onMenuHandle={this.onMenuHandle}/>
+                    <br />
+                    <br />
                 </div>
             </div>
         } else if(!this.startGameTime) {
@@ -236,12 +237,7 @@ class Game extends React.Component<IGameProps, IGameState> {
         const gameDuration = this.getGameDuration();
 
         return <div id='board-wrapper'>
-            {/*<div key={1} className='board-menu-side'>*/}
-            {/*    <p className='board-title'>MENU</p>*/}
-            {/*    <Menu status={this.state.status} onMenuHandle={this.onMenuHandle}/>*/}
-            {/*</div>*/}
             <div key={2} className='board-game-side'>
-                <p className='board-title'>{this.props.name}</p>
                 <div id='board-active-area' className={this.state.status === gameStatus.STOP ? workAreaClass : ''}
                      ref={this.gameBoardDiv} tabIndex={0} onKeyDown={(e) => this.keyPress(e)}>
                     <Board board={this.props.board}/>
@@ -250,13 +246,6 @@ class Game extends React.Component<IGameProps, IGameState> {
                     <this.GameOver />
                 </div>
             </div>
-            {/*<div key={3} className='board-score-side'>*/}
-            {/*    <p className='board-title'>SCORE</p>*/}
-            {/*    <Score points={this.state.points}*/}
-            {/*           gameDuration={gameDuration}*/}
-            {/*           snakeSpeed={this.getSnakeSpeed()}*/}
-            {/*           snakeLength={this.snake.getLength()}/>*/}
-            {/*</div>*/}
         </div>
     }
 }
