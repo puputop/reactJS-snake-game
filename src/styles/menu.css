@@ -1,0 +1,22 @@
+.menu-button{
+    text-decoration: none;
+    text-align: center;
+    font-weight: bold;
+    cursor:not-allowed;
+    display:block;
+    width:150px;
+    margin:5px;
+    padding:5px;
+    background-color: #eee;
+    border: 1px solid #1c2949;
+    color: #1c2949;
+    opacity: 0.5;
+}
+.menu-button.active{
+    opacity: 1;
+    cursor:pointer;
+    background-color: #61dafb;
+}
+.menu-button.active:hover{
+    background-color: aqua;
+}

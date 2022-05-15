@@ -1,0 +1,13 @@
+.screen .pause-icon{
+    display: flex;
+    flex-direction: row;
+}
+.screen .pause-icon::before,
+.screen .pause-icon::after {
+    content: " ";
+    display: block;
+    width:30px;
+    height:100px;
+    margin:10px;
+    background-color:#000;
+}

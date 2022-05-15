@@ -1,7 +1,7 @@
 {
-  "name": "simple-arcade",
-  "version": "0.1.0",
-  "private": true,
+  "name": "snake-game",
+  "version": "1.0.0",
+  "private": false,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.2.0",

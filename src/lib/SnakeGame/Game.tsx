@@ -1,19 +1,27 @@
 import React, {ReactElement} from 'react';
-import './style/game.css';
-import Board, {BoardSize} from "./Core/Interface/Board";
-import {createSnake, Snake} from "./Core/Objects/Snake";
+import '../../styles/game.css';
+import Board, {BoardSize} from "./Interface/Board";
+import {createSnake, Snake} from "./Objects/Snake";
 import {pointsPerStep, SNAKE} from "./config";
-import {CoinsFarm, createCoinsFarm} from "./Core/Objects/Coins";
-import {menuActions, MenuButton} from "./Core/Interface/Menu";
-import Score from "./Core/Interface/Score";
-import {Direction} from "./Core/Point";
+import {CoinsFarm, createCoinsFarm} from "./Objects/Coins";
+import {menuActions} from "./Interface/MenuButton";
+import {Direction} from "./Point";
+import PlayScreen from "./Interface/Screens/PlayScreen";
+import PauseScreen from "./Interface/Screens/PauseScreen";
+import MainMenuScreen from "./Interface/Screens/MainMenuScreen";
+import GameOverScreen from "./Interface/Screens/GameOverScreen";
 
 /*
 TODO раскидать стили по файлам
-отцентровать "Game Over" всплывающую в конце игры (разместить её отдельно от очков и другого поверх с absolute)
-почистить меню
+1. пофиксить зажим пробела
+2. информация об ESC и SPACE перед началом игры (3..2..1..LET'S GO)
+3. экран настроек (отображать очки во время игры) ?? может и не надо
+4. изучить модули для подгрузки стилей
+5. изучить наследование для определения параметров интерфейсов по умолчанию
+6. экран паузы
+7. подтверждение выхода из игры после ESC
 почистить стили очков
-добавить очки и время во время игры (полоской сверху)
+добавить очки и время во время игры (внизу сверху) ??
  */
 interface IGameProps {
     name: string,
@@ -38,8 +46,6 @@ class Game extends React.Component<IGameProps, IGameState> {
     pauseStartTime: number = 0
     finishGameTime: number = 0
 
-
-
     constructor(props: IGameProps) {
         super(props);
         this.state = {
@@ -54,7 +60,8 @@ class Game extends React.Component<IGameProps, IGameState> {
         this.onChangeSnakeHandle = this.onChangeSnakeHandle.bind(this)
         this.onChangeCoinsFarmHandle = this.onChangeCoinsFarmHandle.bind(this)
         this.getGameDuration = this.getGameDuration.bind(this)
-        this.GameOver = this.GameOver.bind(this)
+        this.PlayPauseScreen = this.PlayPauseScreen.bind(this)
+        this.Menu = this.Menu.bind(this)
         // ref
         this.gameBoardDiv = React.createRef();
         // create game objects
@@ -78,7 +85,7 @@ class Game extends React.Component<IGameProps, IGameState> {
     }
 
     focusBoard() : void {
-        if (this.gameBoardDiv.current) {
+        if (this.state.status === gameStatus.PLAY && this.gameBoardDiv.current) {
             this.gameBoardDiv.current.focus();
         }
     }
@@ -111,36 +118,73 @@ class Game extends React.Component<IGameProps, IGameState> {
     }
 
     keyPress(e: any) : void {
-        if (this.state.status === gameStatus.PLAY) {
+        if (this.state.status !== gameStatus.STOP) {
+            const pause = [32];
+            const stop = [27];
             const up = [38, 87];
             const down = [40, 83];
             const left = [37, 65];
             const right = [68, 39];
             const keyCode = e.keyCode;
-            if (up.indexOf(keyCode) > -1) {
-                this.snake.setDirection(Direction.top)
-            } else if (down.indexOf(keyCode) > -1) {
-                this.snake.setDirection(Direction.bottom)
-            } else if (left.indexOf(keyCode) > -1) {
-                this.snake.setDirection(Direction.left)
-            } else if (right.indexOf(keyCode) > -1) {
-                this.snake.setDirection(Direction.right)
+            if(this.state.status === gameStatus.PLAY) {
+                if (up.indexOf(keyCode) > -1) {
+                    this.snake.setDirection(Direction.top)
+                    e.preventDefault();
+                } else if (down.indexOf(keyCode) > -1) {
+                    this.snake.setDirection(Direction.bottom)
+                    e.preventDefault();
+                } else if (left.indexOf(keyCode) > -1) {
+                    this.snake.setDirection(Direction.left)
+                    e.preventDefault();
+                } else if (right.indexOf(keyCode) > -1) {
+                    this.snake.setDirection(Direction.right)
+                    e.preventDefault();
+                } else if (pause.indexOf(keyCode) > -1) {
+                    this.gamePause();
+                    e.preventDefault();
+                } else if (stop.indexOf(keyCode) > -1) {
+                    this.gameStop();
+                    e.preventDefault();
+                }
+            } else if (this.state.status === gameStatus.PAUSE) {
+                if(pause.indexOf(keyCode) > -1) {
+                    this.gamePlay();
+                    e.preventDefault();
+                } else if (stop.indexOf(keyCode) > -1) {
+                    this.gameStop();
+                    e.preventDefault();
+                }
             }
-            e.preventDefault();
         }
     }
 
-    onMenuHandle(action: menuActions): void {
+    onMenuHandle(event: React.MouseEvent, action: menuActions) : void {
+        event.preventDefault()
         switch (action) {
             case menuActions.NEW_GAME:
-                return this.gameNewGame();
+                return this.gameNewGame()
             case menuActions.PAUSE:
-                return this.gamePause();
+                return this.gamePause()
             case menuActions.PLAY:
-                return this.gamePlay();
+                return this.gamePlay()
             case menuActions.STOP:
-                return this.gameStop();
+                return this.gameStop()
+            case menuActions.MAIN_MENU:
+                return this.gameMainMenu()
         }
+    }
+
+    gameMainMenu() : void {
+        this.pauseDuration = 0;
+        this.startGameTime = 0;
+        this.finishGameTime = 0;
+        this.pauseStartTime = 0;
+        this.setState<never>(() => {
+            return {
+                status: gameStatus.STOP,
+                points: 0,
+            };
+        });
     }
 
     gameNewGame() : void {
@@ -206,26 +250,29 @@ class Game extends React.Component<IGameProps, IGameState> {
         }
     }
 
-    GameOver() : ReactElement|null {
-        if(this.finishGameTime) {
-            return <div id='game-over'>
-                <p className='title'>GAME OVER</p>
-                <div className='delay'>
-                    <Score points={this.state.points}
-                           gameDuration={this.getGameDuration()}
-                           snakeSpeed={this.getSnakeSpeed()}
-                           snakeLength={this.snake.getLength()}/>
-                    <MenuButton action={menuActions.NEW_GAME} onMenuHandle={this.onMenuHandle}/>
-                    <br />
-                    <br />
-                </div>
-            </div>
-        } else if(!this.startGameTime) {
-            return <div id='game-menu'>
-                <MenuButton action={menuActions.NEW_GAME} onMenuHandle={this.onMenuHandle}/>
-            </div>
+    Menu() : ReactElement|null {
+        if([gameStatus.PLAY, gameStatus.PAUSE].indexOf(this.state.status) > -1) {
+            return <div id='game-score'>points: {Math.round(this.state.points)}</div>
         } else {
             return null
+        }
+    }
+
+    PlayPauseScreen() : ReactElement|null {
+        if(!this.startGameTime) {
+            return <MainMenuScreen onMenuHandle={this.onMenuHandle} />
+        } else if(this.finishGameTime) {
+            return <GameOverScreen points={this.state.points}
+                                   gameDuration={this.getGameDuration()}
+                                   snakeSpeed={this.getSnakeSpeed()}
+                                   snakeLength={this.snake.getLength()}
+                                   onMenuHandle={this.onMenuHandle} />
+        } else if(this.state.status === gameStatus.PAUSE) {
+            return <PauseScreen key={this.pauseStartTime} />
+        } else if(this.state.status === gameStatus.PLAY && this.pauseDuration) {
+            return <PlayScreen key={this.pauseStartTime} />
+        } else {
+            return null;
         }
     }
 
@@ -243,7 +290,8 @@ class Game extends React.Component<IGameProps, IGameState> {
                     <Board board={this.props.board}/>
                     <this.snake.Draw />
                     <this.coinsFarm.Draw gameDuration={gameDuration} />
-                    <this.GameOver />
+                    <this.Menu />
+                    <this.PlayPauseScreen />
                 </div>
             </div>
         </div>

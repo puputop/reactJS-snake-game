@@ -1,5 +1,6 @@
+import '../../../styles/coin.css';
 import {ReactElement} from "react";
-import {BOARD, COINS} from "../../config";
+import {BOARD, COINS} from "../config";
 import Point, {indexOfPoint} from "../Point";
 import {BoardSize} from "../Interface/Board";
 import {Snake} from "./Snake";

@@ -1,0 +1,9 @@
+.play-icon{
+    display: block;
+    box-sizing: border-box;
+    width:70px;
+    margin:10px;
+    border-top:50px solid transparent;
+    border-left:70px solid darkgreen;
+    border-bottom:50px solid transparent;
+}

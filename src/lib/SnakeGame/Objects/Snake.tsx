@@ -1,5 +1,6 @@
+import '../../../styles/snake.css';
 import {ReactElement} from "react";
-import {BOARD, SNAKE} from "../../config";
+import {BOARD, SNAKE} from "../config";
 import Point, {Direction, nextPoint} from "../Point";
 import {CoinsFarm} from "./Coins";
 import {BoardSize} from "../Interface/Board";
@@ -85,7 +86,7 @@ export function createSnake(board: BoardSize, onChangeCallback : (isAlive : bool
         },
         start: function () {
             if(workTimer) clearTimeout(workTimer)
-            work()
+            workTimer = setTimeout(work, currentSpeed)
             return this
         },
         stop: function () {

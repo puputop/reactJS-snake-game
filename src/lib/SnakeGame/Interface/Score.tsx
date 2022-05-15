@@ -1,7 +1,15 @@
+import '../../../styles/score.css'
 import React, {ReactElement} from "react";
 
-function Score (props: {points: number, gameDuration: number, snakeSpeed: number, snakeLength : number}) : ReactElement {
-    const {points, gameDuration, snakeSpeed, snakeLength} = props;
+export interface IScoreProps {
+    points: number,
+    gameDuration: number,
+    snakeSpeed: number,
+    snakeLength : number
+}
+
+function Score (props: IScoreProps) : ReactElement {
+    const {points, gameDuration, snakeSpeed, snakeLength} = props
     const scoreFields = [
         {label: 'Points', value: Math.round(points)},
         {label: 'Duration', value: Math.round(gameDuration / 1000)},
@@ -9,12 +17,11 @@ function Score (props: {points: number, gameDuration: number, snakeSpeed: number
         {label: 'Length', value: snakeLength},
     ]
     return <div id='score'>
-        <p className='game-title'>SNAKE</p>
         {scoreFields.map((score, index) => (
-            <span key={index} className='score'>
+            <p key={index} className='item'>
                 <span className='label'>{score.label}</span>
                 <span className='value'>{score.value}</span>
-            </span>
+            </p>
         ))}
     </div>
 }
