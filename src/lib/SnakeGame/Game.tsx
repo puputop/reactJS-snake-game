@@ -13,15 +13,8 @@ import GameOverScreen from "./Interface/Screens/GameOverScreen";
 
 /*
 TODO раскидать стили по файлам
-1. пофиксить зажим пробела
-2. информация об ESC и SPACE перед началом игры (3..2..1..LET'S GO)
-3. экран настроек (отображать очки во время игры) ?? может и не надо
 4. изучить модули для подгрузки стилей
 5. изучить наследование для определения параметров интерфейсов по умолчанию
-6. экран паузы
-7. подтверждение выхода из игры после ESC
-почистить стили очков
-добавить очки и время во время игры (внизу сверху) ??
  */
 interface IGameProps {
     name: string,
@@ -117,15 +110,15 @@ class Game extends React.Component<IGameProps, IGameState> {
         return 1 / (SNAKE.SPEED.INITIAL / this.getSnakeSpeed())
     }
 
-    keyPress(e: any) : void {
+    keyPress(e: React.KeyboardEvent) : void {
         if (this.state.status !== gameStatus.STOP) {
-            const pause = [32];
-            const stop = [27];
-            const up = [38, 87];
-            const down = [40, 83];
-            const left = [37, 65];
-            const right = [68, 39];
-            const keyCode = e.keyCode;
+            const pause : any = ['Space'];
+            const stop = ['Escape'];
+            const up = ['ArrowUp', 'KeyW'];
+            const down = ['ArrowDown', 'KeyS'];
+            const left = ['ArrowLeft', 'KeyA'];
+            const right = ['ArrowRight', 'KeyD'];
+            const keyCode = e.code;
             if(this.state.status === gameStatus.PLAY) {
                 if (up.indexOf(keyCode) > -1) {
                     this.snake.setDirection(Direction.top)
