@@ -1,9 +1,9 @@
 import React, {ReactElement} from 'react';
 import './styles/game.css';
 import Board, {BoardSize} from "./lib/Interface/Board";
-import {createSnake, Snake} from "./lib/Objects/Snake";
+import {createSnake, Snake} from "./lib/common/Snake";
 import {pointsPerStep, SNAKE} from "./lib/config";
-import {CoinsFarm, createCoinsFarm} from "./lib/Objects/Coins";
+import {CoinsFarm, createCoinsFarm} from "./lib/common/Coins";
 import {menuActions} from "./lib/Interface/MenuButton";
 import PlaySprite from "./lib/Interface/Sprites/PlaySprite";
 import PauseSprite from "./lib/Interface/Sprites/PauseSprite";
