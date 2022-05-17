@@ -1,22 +1,17 @@
 import React, {ReactElement} from 'react';
-import '../../../src/styles/game.css';
-import Board, {BoardSize} from "./Interface/Board";
-import {createSnake, Snake} from "./Objects/Snake";
-import {pointsPerStep, SNAKE} from "./config";
-import {CoinsFarm, createCoinsFarm} from "./Objects/Coins";
-import {menuActions} from "./Interface/MenuButton";
-import PlaySprite from "./Interface/Sprites/PlaySprite";
-import PauseSprite from "./Interface/Sprites/PauseSprite";
-import MainMenuSprite from "./Interface/Sprites/MainMenuSprite";
-import GameOverSprite from "./Interface/Sprites/GameOverSprite";
-import {getDirection, isForceStop, isPause} from "./ControlKeys";
-import {IScoreProps} from "./Interface/Score";
+import './styles/game.css';
+import Board, {BoardSize} from "./lib/SnakeGame/Interface/Board";
+import {createSnake, Snake} from "./lib/SnakeGame/Objects/Snake";
+import {pointsPerStep, SNAKE} from "./lib/SnakeGame/config";
+import {CoinsFarm, createCoinsFarm} from "./lib/SnakeGame/Objects/Coins";
+import {menuActions} from "./lib/SnakeGame/Interface/MenuButton";
+import PlaySprite from "./lib/SnakeGame/Interface/Sprites/PlaySprite";
+import PauseSprite from "./lib/SnakeGame/Interface/Sprites/PauseSprite";
+import MainMenuSprite from "./lib/SnakeGame/Interface/Sprites/MainMenuSprite";
+import GameOverSprite from "./lib/SnakeGame/Interface/Sprites/GameOverSprite";
+import {getDirection, isForceStop, isPause} from "./lib/SnakeGame/ControlKeys";
+import {IScoreProps} from "./lib/SnakeGame/Interface/Score";
 
-/*
-TODO раскидать стили по файлам
-4. изучить модули для подгрузки стилей
-5. изучить наследование для определения параметров интерфейсов по умолчанию
- */
 export interface IGameProps {
     board: BoardSize
 }
