@@ -1,17 +1,11 @@
-import '../../styles/coin.css';
 import {ReactElement} from "react";
-import {BOARD, COINS} from "../config";
-import Point, {indexOfPoint} from "../Point";
-import {BoardSize} from "../Interface/Board";
-import {Snake} from "./Snake";
+import {COINS} from "../../config";
+import Point, {indexOfPoint, isEqualPoints, randomPoint} from "../Point";
+import Board from "../Board";
+import Coin, {RenderCoins} from "./Coin";
+import Snake from "../snake/Snake";
 
-export type Coin = {
-    point: Point,
-    bornTime: number,   // milliseconds from start of game
-    lifetime: number,   // milliseconds
-};
-
-export type CoinsFarm = {
+type CoinsFarm = {
     setSnake: (snake : Snake) => CoinsFarm,
     Render: (params : {gameDuration: number}) => ReactElement,
     start: () => CoinsFarm,
@@ -26,10 +20,12 @@ export type CoinsFarm = {
     setLifetimeMax: (milliseconds: number) => CoinsFarm,
 }
 
+export default CoinsFarm
+
 /**
  * function updateCallback - will be call if coins collection was change
  */
-export function createCoinsFarm(board: BoardSize, getGameDuration: Function, onChangeCallback: Function): CoinsFarm {
+export function createCoinsFarm(board: Board, getGameDuration: Function, onChangeCallback: Function): CoinsFarm {
     let respawnIntervalMin: number = COINS.RESPAWN_INTERVAL_MIN
     let respawnIntervalMax: number = COINS.RESPAWN_INTERVAL_MAX
     let lifetimeMin: number = COINS.LIFETIME_MIN
@@ -59,41 +55,39 @@ export function createCoinsFarm(board: BoardSize, getGameDuration: Function, onC
                 },
                 Math.max(1, coin.bornTime + coin.lifetime - getGameDuration())
             )
-        );
-    };
+        )
+    }
 
-    const isVacantPoint = (p: Point): boolean => {
+    const isVacantPoint = (point: Point): boolean => {
         for (let i = 0; i < coins.length; i++) {
-            const sp = coins[i].point
-            if (p.x === sp.x && p.y === sp.y) return false
+            if (isEqualPoints(point, coins[i].point)) return false
         }
-        return (!currentSnake || indexOfPoint(p, currentSnake.getDisposition()) === -1)
+        return !currentSnake || indexOfPoint(point, currentSnake.getDisposition()) === -1
     }
 
     const createCoin = (): Coin => {
-        const {cols, rows} = board
         let x: number,
             y: number,
             point: Point = {x: 0, y: 0},
-            isFound: boolean = false;
+            isFound: boolean = false
+        // try to find random empty place
         for (let time = 0; time < 20; time++) {
-            x = Math.round(Math.random() * (cols - 1));
-            y = Math.round(Math.random() * (rows - 1));
-            point = {x, y};
+            point = randomPoint(board)
             if (isVacantPoint(point)) {
-                isFound = true;
-                break;
+                isFound = true
+                break
             }
         }
         // search first empty place
         if (!isFound) {
+            const {cols, rows} = board
             stop_loop:
             for (x = 0; x < cols; x++) {
                 for (y = 0; y < rows; y++) {
-                    point = {x, y};
+                    point = {x, y}
                     if (isVacantPoint(point)) {
-                        isFound = true;
-                        break stop_loop;
+                        isFound = true
+                        break stop_loop
                     }
                 }
             }
@@ -106,29 +100,29 @@ export function createCoinsFarm(board: BoardSize, getGameDuration: Function, onC
                 lifetime: lifetimeMin + Math.random() * (lifetimeMax - lifetimeMin),
             }
         } else {
-            throw new Error('board is absolutely fill');
+            throw new Error('board is absolutely fill')
         }
     }
 
     const work = () => {
         if (isWork) {
             try {
-                const newCoin = createCoin();
-                addLifetimeTimer(newCoin);
-                coins.push(newCoin);
+                const newCoin = createCoin()
+                addLifetimeTimer(newCoin)
+                coins.push(newCoin)
             } catch (e) {
                 // full map
             }
-            if (workTimer) clearTimeout(workTimer);
-            workTimer = setTimeout(work, getBornDelay());
+            if (workTimer) clearTimeout(workTimer)
+            workTimer = setTimeout(work, getBornDelay())
         }
     }
 
     const start = () => {
         if (!isWork) {
-            isWork = true;
-            workTimer = setTimeout(work, getBornDelay());
-            coins.forEach((coin) => {addLifetimeTimer(coin)});
+            isWork = true
+            workTimer = setTimeout(work, getBornDelay())
+            coins.forEach((coin) => {addLifetimeTimer(coin)})
         }
     }
 
@@ -200,20 +194,4 @@ export function createCoinsFarm(board: BoardSize, getGameDuration: Function, onC
             return this
         },
     }
-}
-
-export function RenderCoins(params: { coins: Array<Coin>, gameDuration: number }): ReactElement {
-    const coins = params.coins;
-    let sprites: ReactElement[] = [];
-    for (let i = 0; i < coins.length; i++) {
-        const coin = coins[i];
-        const style = {
-            top: coin.point.y * BOARD.CELL_LENGTH + 2,
-            left: coin.point.x * BOARD.CELL_LENGTH + 2,
-        }
-        const lifetime = Math.max(0, Math.round((coin.bornTime + coin.lifetime - params.gameDuration) / 1000));
-        const text = lifetime <= 5 ? lifetime.toString() : '';
-        sprites.push(<span key={coin.point.x + '-' + coin.point.y} className='coin' style={style}>{text}</span>)
-    }
-    return <span>{sprites.concat()}</span>;
 }

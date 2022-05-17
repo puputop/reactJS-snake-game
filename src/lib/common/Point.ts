@@ -1,4 +1,4 @@
-import {BoardSize} from "./Interface/Board";
+import Board from "./Board";
 
 type Point = {
     x: number,
@@ -6,6 +6,8 @@ type Point = {
 };
 
 export default Point;
+
+export enum Direction {left, right, up, down}
 
 /**
  * similar Array.indexOf for Point[]
@@ -21,7 +23,6 @@ export function indexOfPoint(point: Point, points: Point[]): number {
     return -1
 }
 
-export enum Direction {left, right, up, down}
 
 /**
  * return nextPoint for point with the defined direction for the defined board
@@ -30,7 +31,7 @@ export enum Direction {left, right, up, down}
  * @param direction: Direction
  * @param board: BoardSize
  */
-export function nextPoint(point: Point, direction: Direction, board: BoardSize): Point {
+export function nextPoint(point: Point, direction: Direction, board: Board): Point {
     const {cols, rows} = board
     const nextPoint = {x : point.x, y: point.y}
     switch (direction) {
@@ -51,4 +52,15 @@ export function nextPoint(point: Point, direction: Direction, board: BoardSize):
             if(nextPoint.y >= rows) nextPoint.y = 0
             return nextPoint
     }
+}
+
+export function randomPoint(board: Board) : Point {
+    const {cols, rows} = board
+    const x = Math.round(Math.random() * (cols - 1))
+    const y = Math.round(Math.random() * (rows - 1))
+    return {x, y}
+}
+
+export function isEqualPoints(point1: Point, point2: Point) : boolean {
+    return point1.x === point2.x && point1.y === point2.y
 }

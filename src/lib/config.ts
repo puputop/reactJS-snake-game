@@ -1,5 +1,5 @@
 // BOARD setting
-import Point, {Direction} from "./Point";
+import Point, {Direction} from "./common/Point";
 
 export const BOARD = {
     CELL_LENGTH: 20 as number,  // width & height cell of board (if you want to change - need correct CSS (game.css))
