@@ -1,12 +1,8 @@
 import '../../styles/board.css'
 import {ReactElement} from "react"
+import Board from "../common/Board"
 
-export type BoardSize = {
-    cols : number,
-    rows : number
-}
-
-function Board(props: {board : BoardSize}) : ReactElement  {
+function GameBoard(props: {board : Board}) : ReactElement  {
     const {cols, rows} = props.board
     const board = []
     for(let x = 0; x < rows; x++) {
@@ -19,4 +15,4 @@ function Board(props: {board : BoardSize}) : ReactElement  {
     return <div id='board-bg'>{board.concat()}</div>
 }
 
-export default Board
+export default GameBoard

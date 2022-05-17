@@ -1,4 +1,4 @@
-/* Snake */
+/* CreateSnake */
 .snake .head::before{
     content: " ";
     display:block;

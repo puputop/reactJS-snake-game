@@ -1,19 +1,21 @@
 import React, {ReactElement} from 'react';
 import './styles/game.css';
-import Board, {BoardSize} from "./lib/Interface/Board";
-import {createSnake, Snake} from "./lib/common/snake/Snake";
+import Board from "./lib/common/Board";
+import GameBoard from "./lib/Interface/GameBoard";
+import {createSnake} from "./lib/common/snake/createSnake";
 import {pointsPerStep, SNAKE} from "./lib/config";
-import {CoinsFarm, createCoinsFarm} from "./lib/common/coins/Coins";
+import CoinsFarm, {createCoinsFarm} from "./lib/common/coins/CoinsFarm";
 import {menuActions} from "./lib/Interface/MenuButton";
-import PlaySprite from "./lib/Interface/Sprites/PlaySprite";
-import PauseSprite from "./lib/Interface/Sprites/PauseSprite";
-import MainMenuSprite from "./lib/Interface/Sprites/MainMenuSprite";
-import GameOverSprite from "./lib/Interface/Sprites/GameOverSprite";
-import {getDirection, isForceStop, isPause} from "./lib/ControlKeysPOOL";
+import PlaySprite from "./lib/Interface/sprites/PlaySprite";
+import PauseSprite from "./lib/Interface/sprites/PauseSprite";
+import MainMenuSprite from "./lib/Interface/sprites/MainMenuSprite";
+import GameOverSprite from "./lib/Interface/sprites/GameOverSprite";
+import {getDirection, isForceStop, isPause} from "./lib/controlKeys";
 import {IScoreProps} from "./lib/Interface/Score";
+import Snake from "./lib/common/snake/Snake";
 
 export interface IGameProps {
-    board: BoardSize
+    board: Board
 }
 
 export interface IGameState {
@@ -268,10 +270,7 @@ class Game extends React.Component<IGameProps, IGameState> {
                     return <MainMenuSprite onClickMenuHandler={this.onClickMenuHandler}/>
                 }
             case gameStatus.PLAY:
-                return <>
-                    <PlaySprite key={this.state.pauseStartTime}/>
-                    <div id='game-score'>points: {Math.round(this.state.points)}</div>
-                </>
+                return <PlaySprite key={this.state.pauseStartTime} points={this.state.points}/>
             case gameStatus.PAUSE:
                 return <PauseSprite key={this.state.pauseStartTime}/>
         }
@@ -279,18 +278,14 @@ class Game extends React.Component<IGameProps, IGameState> {
 
     render() {
         return <div id='board-wrapper'>
-            <div key={2} className='board-game-side'>
-                <div id='board-active-area'
-                     ref={this.gameBoardDiv}
-                     tabIndex={0}
-                     onKeyDown={(e) => this.onKeyDownHandler(e)}>
+            <div id='board-active-area' ref={this.gameBoardDiv} tabIndex={0}
+                 onKeyDown={(e) => this.onKeyDownHandler(e)}>
 
-                    <Board board={this.props.board}/>
-                    <this.snake.Render/>
-                    <this.coinsFarm.Render gameDuration={this.getGameDuration()}/>
+                <GameBoard board={this.props.board}/>
+                <this.snake.Render/>
+                <this.coinsFarm.Render gameDuration={this.getGameDuration()}/>
 
-                    <this.AdditionalSprite/>
-                </div>
+                <this.AdditionalSprite/>
             </div>
         </div>
     }
