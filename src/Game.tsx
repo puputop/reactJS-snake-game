@@ -9,7 +9,7 @@ import PlaySprite from "./lib/SnakeGame/Interface/Sprites/PlaySprite";
 import PauseSprite from "./lib/SnakeGame/Interface/Sprites/PauseSprite";
 import MainMenuSprite from "./lib/SnakeGame/Interface/Sprites/MainMenuSprite";
 import GameOverSprite from "./lib/SnakeGame/Interface/Sprites/GameOverSprite";
-import {getDirection, isForceStop, isPause} from "./lib/SnakeGame/ControlKeys";
+import {getDirection, isForceStop, isPause} from "./lib/SnakeGame/ControlKeysPOOL";
 import {IScoreProps} from "./lib/SnakeGame/Interface/Score";
 
 export interface IGameProps {

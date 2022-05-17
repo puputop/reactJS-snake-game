@@ -1,7 +1,7 @@
 // React.KeyboardEvent.code
 import {Direction} from "./Point";
 
-const controlKeys = {
+const controlKeysPOOL = {
     pause: ['Space'],
     forceStop: ['Escape'],
     directions: {
@@ -13,15 +13,15 @@ const controlKeys = {
 }
 
 export function isPause(keyCode : string) : boolean {
-    return controlKeys.pause.indexOf(keyCode) > -1
+    return controlKeysPOOL.pause.indexOf(keyCode) > -1
 }
 
 export function isForceStop(keyCode : string) : boolean {
-    return controlKeys.forceStop.indexOf(keyCode) > -1
+    return controlKeysPOOL.forceStop.indexOf(keyCode) > -1
 }
 
 export function getDirection(keyCode : string) : null|Direction {
-    const {up, down, left, right} = controlKeys.directions
+    const {up, down, left, right} = controlKeysPOOL.directions
     if(up.indexOf(keyCode) > -1) return Direction.up
     if(down.indexOf(keyCode) > -1) return Direction.down
     if(left.indexOf(keyCode) > -1) return Direction.left
