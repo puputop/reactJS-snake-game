@@ -1,5 +1,5 @@
-import '../../../../styles/sprites/sprite.css'
-import '../../../../styles/sprites/pause-sprite.css'
+import '../../../styles/sprites/sprite.css'
+import '../../../styles/sprites/pause-sprite.css'
 import {ReactElement} from "react";
 
 export default function PauseSprite () : ReactElement {

@@ -1,4 +1,4 @@
-import '../../../styles/menu.css'
+import '../../styles/menu.css'
 import React, {ReactElement} from 'react'
 
 export const enum menuActions {START_NEW_GAME, PAUSE, PLAY, STOP, GO_TO_MAIN_MENU}

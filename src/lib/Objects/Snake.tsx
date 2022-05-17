@@ -1,4 +1,4 @@
-import '../../../styles/snake.css';
+import '../../styles/snake.css';
 import {ReactElement} from "react";
 import {BOARD, SNAKE} from "../config";
 import Point, {Direction, nextPoint} from "../Point";

@@ -1,4 +1,4 @@
-import '../../../styles/coin.css';
+import '../../styles/coin.css';
 import {ReactElement} from "react";
 import {BOARD, COINS} from "../config";
 import Point, {indexOfPoint} from "../Point";

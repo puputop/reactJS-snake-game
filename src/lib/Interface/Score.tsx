@@ -1,4 +1,4 @@
-import '../../../styles/score.css'
+import '../../styles/score.css'
 import React, {ReactElement} from "react";
 
 type ScoreItem = {

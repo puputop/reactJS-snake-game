@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 import Game from "./Game";
-import {BOARD} from "./lib/SnakeGame/config";
+import {BOARD} from "./lib/config";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
