@@ -13,7 +13,7 @@ export type Snake = {
     growth: () => Snake, // length++
     setDirection: (direction: Direction) => Snake,
     setSpeed: (speed : number) => Snake,
-    Draw: () => ReactElement,
+    Render: () => ReactElement,
     getDisposition: () => Array<Point>,
     getLength: () => number
 }
@@ -25,7 +25,7 @@ export function createSnake(board: BoardSize, onChangeCallback : (isAlive : bool
     let disposition: Array<Point>
     let currentCoinsFarm: CoinsFarm
 
-    let workTimer: NodeJS.Timer | null = null
+    let workTimer: NodeJS.Timer
 
     toInitial()
 
@@ -48,7 +48,10 @@ export function createSnake(board: BoardSize, onChangeCallback : (isAlive : bool
         }
         return true;
     }
-
+    /**
+     * testing that next point with direction differs from prevPoint
+     * @param direction
+     */
     const isPossibleDirection = (direction : Direction) : boolean => {
         if(length < 2) return true;
         const snakesHead: Point = disposition[disposition.length - 1];
@@ -57,6 +60,11 @@ export function createSnake(board: BoardSize, onChangeCallback : (isAlive : bool
         return point.x !== beforePoint.x || point.y !== beforePoint.y;
     }
 
+    /**
+     * activate snake moves every currentSpeed ms
+     * first move will be immediately after the call
+     * in the end will be call onChangeCallback(isAlive)
+     */
     const work = () => {
         if(isAlive()) {
             const snakesHead: Point = disposition[disposition.length - 1];
@@ -90,10 +98,7 @@ export function createSnake(board: BoardSize, onChangeCallback : (isAlive : bool
             return this
         },
         stop: function () {
-            if(workTimer) {
-                clearTimeout(workTimer)
-                workTimer = null
-            }
+            if(workTimer) clearTimeout(workTimer)
             return this
         },
         growth: function () {
@@ -113,14 +118,14 @@ export function createSnake(board: BoardSize, onChangeCallback : (isAlive : bool
             return this
         },
         setSpeed: function (speed: number) {
-            currentSpeed = speed
+            currentSpeed = Math.max(speed, SNAKE.SPEED.MINIMAL)
             return this
         },
-        Draw: () => DrawSnake({snakeDisposition : disposition})
+        Render: () => RenderSnake({snakeDisposition : disposition})
     }
 }
 
-function DrawSnake(params : {snakeDisposition: Array<Point>}) : ReactElement {
+function RenderSnake(params : {snakeDisposition: Array<Point>}) : ReactElement {
     const {snakeDisposition} = params;
     const cellLength = BOARD.CELL_LENGTH; // width|height of 1 field
     let sprites: ReactElement[] = [];

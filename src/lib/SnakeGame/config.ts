@@ -20,7 +20,7 @@ export const SNAKE = {
         INITIAL:            250 as number,  // milliseconds 250
         MINIMAL:            50  as number,  // milliseconds 50
         GROWTH_STEP:        2   as number,  // percents from initial per every GROWTH_INTERVAL of the game duration
-        GROWTH_INTERVAL:    1   as number,  // seconds
+        GROWTH_INTERVAL:    1000 as number,  // milliseconds
     }
 }
 export const COINS = {

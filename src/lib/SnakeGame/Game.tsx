@@ -1,90 +1,103 @@
 import React, {ReactElement} from 'react';
-import '../../styles/game.css';
+import '../../../src/styles/game.css';
 import Board, {BoardSize} from "./Interface/Board";
 import {createSnake, Snake} from "./Objects/Snake";
 import {pointsPerStep, SNAKE} from "./config";
 import {CoinsFarm, createCoinsFarm} from "./Objects/Coins";
 import {menuActions} from "./Interface/MenuButton";
-import {Direction} from "./Point";
-import PlayScreen from "./Interface/Screens/PlayScreen";
-import PauseScreen from "./Interface/Screens/PauseScreen";
-import MainMenuScreen from "./Interface/Screens/MainMenuScreen";
-import GameOverScreen from "./Interface/Screens/GameOverScreen";
+import PlaySprite from "./Interface/Sprites/PlaySprite";
+import PauseSprite from "./Interface/Sprites/PauseSprite";
+import MainMenuSprite from "./Interface/Sprites/MainMenuSprite";
+import GameOverSprite from "./Interface/Sprites/GameOverSprite";
+import {getDirection, isForceStop, isPause} from "./ControlKeys";
+import {IScoreProps} from "./Interface/Score";
 
 /*
 TODO раскидать стили по файлам
 4. изучить модули для подгрузки стилей
 5. изучить наследование для определения параметров интерфейсов по умолчанию
  */
-interface IGameProps {
-    name: string,
-    board : BoardSize
+export interface IGameProps {
+    board: BoardSize
 }
 
-interface IGameState {
+export interface IGameState {
     status: gameStatus,
-    points: 0
+    points: number,
+    startTime: number,
+    finishTime: number,
+    pauseStartTime: number,
+    pauseDuration: number,
 }
 
-
-export const enum gameStatus {PLAY, STOP, PAUSE}
+/**
+ * PLAY - game in the progress
+ * PAUSE - game on the pause
+ * STOP - game finished or not started
+ */
+export const enum gameStatus {
+    PLAY, STOP, PAUSE
+}
 
 class Game extends React.Component<IGameProps, IGameState> {
 
-    snake: Snake
-    coinsFarm : CoinsFarm
-    gameBoardDiv: React.RefObject<HTMLDivElement>
-    startGameTime: number = 0
-    pauseDuration: number = 0
-    pauseStartTime: number = 0
-    finishGameTime: number = 0
+    readonly snake: Snake
+    readonly coinsFarm: CoinsFarm
+    readonly gameBoardDiv: React.RefObject<HTMLDivElement>
+    // timers
+    private focusTimer: NodeJS.Timer | undefined
 
     constructor(props: IGameProps) {
         super(props);
         this.state = {
+            startTime: 0,
+            finishTime: 0,
+            pauseStartTime: 0,
+            pauseDuration: 0,
             status: gameStatus.STOP,
             points: 0,
         };
-        const {board} = props;
         // bind
-        this.keyPress = this.keyPress.bind(this)
+        this.onKeyDownHandler = this.onKeyDownHandler.bind(this)
         this.focusBoard = this.focusBoard.bind(this)
-        this.onMenuHandle = this.onMenuHandle.bind(this)
-        this.onChangeSnakeHandle = this.onChangeSnakeHandle.bind(this)
+        this.onClickMenuHandler = this.onClickMenuHandler.bind(this)
+        this.onChangeSnakeHandler = this.onChangeSnakeHandler.bind(this)
         this.onChangeCoinsFarmHandle = this.onChangeCoinsFarmHandle.bind(this)
         this.getGameDuration = this.getGameDuration.bind(this)
-        this.PlayPauseScreen = this.PlayPauseScreen.bind(this)
-        this.Menu = this.Menu.bind(this)
+        this.AdditionalSprite = this.AdditionalSprite.bind(this)
         // ref
         this.gameBoardDiv = React.createRef();
         // create game objects
-        this.coinsFarm = createCoinsFarm({
-            board,
-            getGameDuration: this.getGameDuration,
-            onChangeCallback: this.onChangeCoinsFarmHandle
-        });
-        this.snake = createSnake(board, this.onChangeSnakeHandle)
+        const {board} = props;
+        this.coinsFarm = createCoinsFarm(board, this.getGameDuration, this.onChangeCoinsFarmHandle);
+        this.snake = createSnake(board, this.onChangeSnakeHandler)
             .setCoinsFarm(this.coinsFarm);
         this.coinsFarm.setSnake(this.snake);
-        setInterval(() => this.focusBoard(), 200)
     }
 
-    componentDidMount() : void {
+    componentDidMount(): void {
+        this.focusBoard();
+        this.focusTimer = setInterval(() => this.focusBoard(), 200)
+    }
+
+    componentWillUnmount() {
+        if (this.focusTimer) clearInterval(this.focusTimer)
+        this.snake.stop();
+        this.coinsFarm.stop();
+    }
+
+    componentDidUpdate(): void {
         this.focusBoard();
     }
 
-    componentDidUpdate() : void {
-        this.focusBoard();
-    }
-
-    focusBoard() : void {
-        if (this.state.status === gameStatus.PLAY && this.gameBoardDiv.current) {
+    focusBoard(): void {
+        if (this.state.status !== gameStatus.STOP && this.gameBoardDiv.current) {
             this.gameBoardDiv.current.focus();
         }
     }
 
-    onChangeSnakeHandle(alive : boolean) :void {
-        if(alive) {
+    onChangeSnakeHandler(alive: boolean): void {
+        if (alive) {
             const speed = this.getSnakeSpeed();
             this.snake.setSpeed(speed)
             this.coinsFarm.setAccelerationCoefficient(this.getCoinsFarmAccelerationCoefficient())
@@ -93,198 +106,195 @@ class Game extends React.Component<IGameProps, IGameState> {
             }))
         } else {
             this.gameStop();
-            this.setState({})
         }
     }
 
-    onChangeCoinsFarmHandle() : void {
+    onChangeCoinsFarmHandle(): void {
         this.setState({})
     }
 
+    /**
+     * speed - it's interval in milliseconds between snake steps
+     */
     getSnakeSpeed(): number {
-        const speed = SNAKE.SPEED.INITIAL / (1 + this.getGameDuration() / 1000 / SNAKE.SPEED.GROWTH_INTERVAL * SNAKE.SPEED.GROWTH_STEP / 100);
+        const numWholeIntervals = Math.floor(this.getGameDuration() / SNAKE.SPEED.GROWTH_INTERVAL)
+        const percentGrowthSpeedPerInterval = SNAKE.SPEED.GROWTH_STEP / 100
+        const percentIncreaseSpeed = numWholeIntervals * percentGrowthSpeedPerInterval
+        const speed = SNAKE.SPEED.INITIAL / (1 + percentIncreaseSpeed);
         return Math.max(speed, SNAKE.SPEED.MINIMAL);
     }
 
-    getCoinsFarmAccelerationCoefficient() : number {
-        return 1 / (SNAKE.SPEED.INITIAL / this.getSnakeSpeed())
+    getCoinsFarmAccelerationCoefficient(): number {
+        const actualSpeed = this.getSnakeSpeed();
+        return actualSpeed / SNAKE.SPEED.INITIAL
     }
 
-    keyPress(e: React.KeyboardEvent) : void {
-        if (this.state.status !== gameStatus.STOP) {
-            const pause : any = ['Space'];
-            const stop = ['Escape'];
-            const up = ['ArrowUp', 'KeyW'];
-            const down = ['ArrowDown', 'KeyS'];
-            const left = ['ArrowLeft', 'KeyA'];
-            const right = ['ArrowRight', 'KeyD'];
-            const keyCode = e.code;
-            if(this.state.status === gameStatus.PLAY) {
-                if (up.indexOf(keyCode) > -1) {
-                    this.snake.setDirection(Direction.top)
-                    e.preventDefault();
-                } else if (down.indexOf(keyCode) > -1) {
-                    this.snake.setDirection(Direction.bottom)
-                    e.preventDefault();
-                } else if (left.indexOf(keyCode) > -1) {
-                    this.snake.setDirection(Direction.left)
-                    e.preventDefault();
-                } else if (right.indexOf(keyCode) > -1) {
-                    this.snake.setDirection(Direction.right)
-                    e.preventDefault();
-                } else if (pause.indexOf(keyCode) > -1) {
-                    this.gamePause();
-                    e.preventDefault();
-                } else if (stop.indexOf(keyCode) > -1) {
-                    this.gameStop();
-                    e.preventDefault();
-                }
-            } else if (this.state.status === gameStatus.PAUSE) {
-                if(pause.indexOf(keyCode) > -1) {
-                    this.gamePlay();
-                    e.preventDefault();
-                } else if (stop.indexOf(keyCode) > -1) {
-                    this.gameStop();
-                    e.preventDefault();
-                }
+
+    onKeyDownHandler(e: React.KeyboardEvent): void {
+        const keyCode = e.code;
+        if (this.state.status !== gameStatus.STOP && isForceStop(keyCode)) {
+            this.gameStop();
+            e.preventDefault();
+        } else if (this.state.status === gameStatus.PAUSE && isPause(keyCode)) {
+            this.gamePlay();
+            e.preventDefault();
+        } else if (this.state.status === gameStatus.PLAY) {
+            const direction = getDirection(keyCode)
+            if (direction !== null) {
+                this.snake.setDirection(direction)
+                e.preventDefault()
+            } else if (isPause(keyCode)) {
+                this.gamePause()
+                e.preventDefault()
             }
         }
     }
 
-    onMenuHandle(event: React.MouseEvent, action: menuActions) : void {
+    onClickMenuHandler(event: React.MouseEvent, action: menuActions): void {
         event.preventDefault()
         switch (action) {
-            case menuActions.NEW_GAME:
-                return this.gameNewGame()
+            case menuActions.START_NEW_GAME:
+                return this.gameStartNewGame()
             case menuActions.PAUSE:
                 return this.gamePause()
             case menuActions.PLAY:
                 return this.gamePlay()
             case menuActions.STOP:
                 return this.gameStop()
-            case menuActions.MAIN_MENU:
-                return this.gameMainMenu()
+            case menuActions.GO_TO_MAIN_MENU:
+                return this.gameGoToMainMenu()
         }
     }
 
-    gameMainMenu() : void {
-        this.pauseDuration = 0;
-        this.startGameTime = 0;
-        this.finishGameTime = 0;
-        this.pauseStartTime = 0;
-        this.setState<never>(() => {
-            return {
+    gameGoToMainMenu(): void {
+        this.setState(() => ({
                 status: gameStatus.STOP,
                 points: 0,
-            };
-        });
+                startTime: 0,
+                finishTime: 0,
+                pauseStartTime: 0,
+                pauseDuration: 0
+            }),
+            () => {
+                this.snake.stop();
+                this.coinsFarm.stop();
+            }
+        )
     }
 
-    gameNewGame() : void {
-        if(this.state.status === gameStatus.STOP) {
-            this.pauseDuration = 0;
-            this.startGameTime = (new Date()).getTime();
-            this.finishGameTime = 0;
-            this.pauseStartTime = 0;
-            this.setState<never>((prevState) => {
-                if (prevState.status === gameStatus.STOP) {
-                    return {
-                        status: gameStatus.PLAY,
-                        points: 0,
-                    };
+    gameStartNewGame(): void {
+        this.setState((prevState) => (
+                prevState.status === gameStatus.STOP ? {
+                    status: gameStatus.PLAY,
+                    points: 0,
+                    startTime: new Date().getTime(),
+                    finishTime: 0,
+                    pauseStartTime: 0,
+                    pauseDuration: 0,
+                } : null),
+            () => {
+                if (this.state.status === gameStatus.PLAY) {
+                    this.coinsFarm.empty().start()
+                    this.snake.toInitial().start()
                 }
-            });
-            // start timers
-            this.coinsFarm.empty().start()
-            this.snake.toInitial().start()
-        }
+            }
+        )
     }
 
-    gameStop() : void {
-        if(this.state.status !== gameStatus.STOP) {
-            this.finishGameTime = new Date().getTime()
-            this.coinsFarm.stop();
-            this.snake.stop();
-            this.setState<never>(() => ({status: gameStatus.STOP}))
-        }
-    }
-
-    gamePause() : void {
-        if(this.state.status === gameStatus.PLAY) {
-            this.pauseStartTime = new Date().getTime()
-            this.snake.stop();
-            this.coinsFarm.stop();
-            this.setState<never>(() => ({status: gameStatus.PAUSE}))
-        }
-    }
-
-    gamePlay() : void {
-        if(this.state.status === gameStatus.PAUSE) {
-            this.pauseDuration += new Date().getTime() - this.pauseStartTime
-            this.snake.start();
-            this.pauseStartTime = 0;
-            this.coinsFarm.start();
-            this.setState<never>(() => ({status: gameStatus.PLAY}))
-        }
-    }
-
-    getGameDuration() : number {
-        switch(this.state.status) {
-            case gameStatus.PLAY:
-                return new Date().getTime() - this.startGameTime - this.pauseDuration;
-            case gameStatus.PAUSE:
-                if(this.pauseStartTime > 0) {
-                    return this.pauseStartTime - this.startGameTime - this.pauseDuration;
-                } else {
-                    return new Date().getTime() - this.startGameTime - this.pauseDuration;
+    gameStop(): void {
+        this.setState((prevState) => (
+                prevState.status === gameStatus.STOP ?
+                    null : {
+                        status: gameStatus.STOP,
+                        finishTime: new Date().getTime()
+                    }),
+            () => {
+                if (this.state.status === gameStatus.STOP) {
+                    this.coinsFarm.stop()
+                    this.snake.stop()
                 }
+            }
+        )
+    }
+
+    gamePause(): void {
+        this.setState((prevState) => (
+                prevState.status === gameStatus.PLAY ? {
+                    status: gameStatus.PAUSE,
+                    pauseStartTime: new Date().getTime()
+                } : null
+            ),
+            () => {
+                if (this.state.status === gameStatus.PAUSE) {
+                    this.snake.stop()
+                    this.coinsFarm.stop()
+                }
+            }
+        )
+    }
+
+    gamePlay(): void {
+        this.setState((prevState) => (
+                prevState.status === gameStatus.PAUSE ? {
+                    status: gameStatus.PLAY,
+                    pauseStartTime: 0,
+                    pauseDuration: prevState.pauseDuration + (new Date().getTime() - prevState.pauseStartTime)
+                } : null),
+            () => {
+                if (this.state.status === gameStatus.PLAY) {
+                    this.snake.start()
+                    this.coinsFarm.start()
+                }
+            })
+    }
+
+    getGameDuration(): number {
+        if (this.state.finishTime > 0) {
+            return this.state.finishTime - this.state.startTime - this.state.pauseDuration;
+        } else if (this.state.pauseStartTime > 0) {
+            return this.state.pauseStartTime - this.state.startTime - this.state.pauseDuration;
+        } else {
+            return new Date().getTime() - this.state.startTime - this.state.pauseDuration;
+        }
+    }
+
+    AdditionalSprite(): ReactElement | null {
+        switch (this.state.status) {
             case gameStatus.STOP:
-                return this.finishGameTime - this.startGameTime - this.pauseDuration;
-        }
-    }
-
-    Menu() : ReactElement|null {
-        if([gameStatus.PLAY, gameStatus.PAUSE].indexOf(this.state.status) > -1) {
-            return <div id='game-score'>points: {Math.round(this.state.points)}</div>
-        } else {
-            return null
-        }
-    }
-
-    PlayPauseScreen() : ReactElement|null {
-        if(!this.startGameTime) {
-            return <MainMenuScreen onMenuHandle={this.onMenuHandle} />
-        } else if(this.finishGameTime) {
-            return <GameOverScreen points={this.state.points}
-                                   gameDuration={this.getGameDuration()}
-                                   snakeSpeed={this.getSnakeSpeed()}
-                                   snakeLength={this.snake.getLength()}
-                                   onMenuHandle={this.onMenuHandle} />
-        } else if(this.state.status === gameStatus.PAUSE) {
-            return <PauseScreen key={this.pauseStartTime} />
-        } else if(this.state.status === gameStatus.PLAY && this.pauseDuration) {
-            return <PlayScreen key={this.pauseStartTime} />
-        } else {
-            return null;
+                if (this.state.startTime) {
+                    const scoreProps: IScoreProps = {
+                        points: this.state.points,
+                        gameDuration: this.getGameDuration(),
+                        snakeLength: this.snake.getLength(),
+                        snakeSpeed: this.getSnakeSpeed()
+                    }
+                    return <GameOverSprite scoreProps={scoreProps} onClickMenuHandler={this.onClickMenuHandler}/>
+                } else {
+                    return <MainMenuSprite onClickMenuHandler={this.onClickMenuHandler}/>
+                }
+            case gameStatus.PLAY:
+                return <>
+                    <PlaySprite key={this.state.pauseStartTime}/>
+                    <div id='game-score'>points: {Math.round(this.state.points)}</div>
+                </>
+            case gameStatus.PAUSE:
+                return <PauseSprite key={this.state.pauseStartTime}/>
         }
     }
 
     render() {
-        let workAreaClass = '';
-        if (this.state.status === gameStatus.STOP) {
-            workAreaClass = 'game-over';
-        }
-        const gameDuration = this.getGameDuration();
-
         return <div id='board-wrapper'>
             <div key={2} className='board-game-side'>
-                <div id='board-active-area' className={this.state.status === gameStatus.STOP ? workAreaClass : ''}
-                     ref={this.gameBoardDiv} tabIndex={0} onKeyDown={(e) => this.keyPress(e)}>
+                <div id='board-active-area'
+                     ref={this.gameBoardDiv}
+                     tabIndex={0}
+                     onKeyDown={(e) => this.onKeyDownHandler(e)}>
+
                     <Board board={this.props.board}/>
-                    <this.snake.Draw />
-                    <this.coinsFarm.Draw gameDuration={gameDuration} />
-                    <this.Menu />
-                    <this.PlayPauseScreen />
+                    <this.snake.Render/>
+                    <this.coinsFarm.Render gameDuration={this.getGameDuration()}/>
+
+                    <this.AdditionalSprite/>
                 </div>
             </div>
         </div>

@@ -1,4 +1,4 @@
-.screen .disappear-title{
+.sprite .disappear-text{
     font-size:0;
     color:transparent;
     animation: game-over 3s linear;
@@ -10,7 +10,7 @@
     99% {font-size:100pt;}
     100% {font-size:100pt;color:transparent;}
 }
-.screen .delay-score{
+.sprite .delay-sprite{
     position:absolute;
     display:flex;
     flex-direction: column;

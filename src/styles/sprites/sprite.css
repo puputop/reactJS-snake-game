@@ -1,4 +1,4 @@
-.screen{
+.sprite{
     z-index:3000;
     position:absolute;
     display:flex;
@@ -10,13 +10,13 @@
     left:0;
     right:0;
 }
-.screen.fill{
+.sprite.fill{
     background-color: #1c2949;
 }
-.screen.fill.opacity90{
+.sprite.fill.opacity90{
     opacity: 0.9;
 }
-.screen.disappear500{
+.sprite.disappear500{
     top:-10000px;
     bottom: initial;
     left: initial;
@@ -30,21 +30,21 @@
     100%{opacity:0;top:0;bottom:0;left:0;right:0;}
 }
 
-.screen .title{
+.sprite .title{
     text-align: center;
     color:#fff;
     font-size:20pt;
     margin:5px;
 }
 
-.screen .tip{
+.sprite .tip{
     background-color: #fff;
     border:1px solid #ddd;
     border-radius: 5px;
     padding:5px;
 }
 
-.screen .tip .button{
+.sprite .tip .button{
     background-color:#eee;
     border:1px solid #000;
     padding:0 5px;

@@ -1,7 +1,4 @@
 /* Snake */
-.game-over .snake .head{
-    background-color: red !important;
-}
 .snake .head::before{
     content: " ";
     display:block;

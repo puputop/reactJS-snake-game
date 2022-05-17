@@ -1,21 +1,28 @@
 import '../../../styles/menu.css'
 import React, {ReactElement} from 'react'
 
+export const enum menuActions {START_NEW_GAME, PAUSE, PLAY, STOP, GO_TO_MAIN_MENU}
+export type OnClickMenuHandler = (e: React.MouseEvent, action: menuActions) => void
 export interface IMenuButton {
     action: menuActions,
-    onMenuHandle: (e: React.MouseEvent, action: menuActions) => void,
+    onClickMenuHandler: OnClickMenuHandler,
     active?: boolean,
     buttonText?: string,
 }
-// TODO перенести отсюда menuActions в Game - сделать текст задаваемым внешне
-export const enum menuActions {NEW_GAME, PAUSE, PLAY, STOP, MAIN_MENU}
+
+// Default props
+const MenuButtonDefaultProps = {
+    active: true,
+    buttonText: ''
+}
 export const defaultButtonText = ['NEW GAME', 'PAUSE', 'PLAY', 'STOP', 'MAIN MENU'];
 
-export function MenuButton (props : IMenuButton) : ReactElement {
-    const {action, onMenuHandle} = props
-    let {active, buttonText} = props
-    if(active === undefined) active = true
-    if(buttonText === undefined) buttonText = defaultButtonText[action]
+export function MenuButton(props: IMenuButton): ReactElement {
+    // set defaults
+    props = {...MenuButtonDefaultProps, ...props}
+    if (props.buttonText === '') props.buttonText = defaultButtonText[props.action]
+    //
+    const {action, onClickMenuHandler, active, buttonText} = props
     return <span key={action} className={'menu-button' + (active ? ' active' : '')}
-                 onClick={(e) => onMenuHandle(e, action)}>{buttonText}</span>
+                 onClick={(e) => onClickMenuHandler(e, action)}>{buttonText}</span>
 }

@@ -1,79 +1,54 @@
-export default Point;
+import {BoardSize} from "./Interface/Board";
 
 type Point = {
     x: number,
     y: number
 };
 
-export function indexOfPoint(point : Point, points : Point[]) : number {
-    for(let i = 0; i < points.length; i++) {
+export default Point;
+
+/**
+ * similar Array.indexOf for Point[]
+ * search Point in Points and return index or -1 if not found
+ * @param point: Point
+ * @param points: Point[]
+ */
+export function indexOfPoint(point: Point, points: Point[]): number {
+    for (let i = 0; i < points.length; i++) {
         const {x, y} = points[i]
-        if(point.x === x && point.y === y) return i
+        if (point.x === x && point.y === y) return i
     }
     return -1
 }
 
-export enum Direction {left, right, top, bottom}
+export enum Direction {left, right, up, down}
 
-
-export function isNeighboringPoints(a : Point, b : Point) : boolean {
-    return Math.abs(a.x - b.x) + Math.abs(a.y - b.y) === 1;
-}
-
-export function isInlinePoints(points : Array<Point>) : boolean {
-    if(points.length) {
-        let xInLine = true,
-            yInLine = true,
-            xLine: number = -1,
-            yLine: number = -1;
-        for (let i = 0; i < points.length; i++) {
-            const {x, y} = points[i];
-            if(xInLine) {
-                if (xLine === -1) xLine = x
-                else if (xLine !== x) xInLine = false;
-            }
-            if(yInLine) {
-                if (yLine === -1) yLine = y
-                else if (yLine !== y) yInLine = false;
-            }
-        }
-        return xInLine || yInLine;
-    } else {
-        return true;
-    }
-}
-
-
-export function nextPoint(point: Point, direction: Direction, board: {cols:number, rows: number}) : Point {
-    let {x,y} = point
+/**
+ * return nextPoint for point with the defined direction for the defined board
+ * if nextPoint beyond the board will be return point from other side of the board
+ * @param point: Point
+ * @param direction: Direction
+ * @param board: BoardSize
+ */
+export function nextPoint(point: Point, direction: Direction, board: BoardSize): Point {
     const {cols, rows} = board
-
-    function isBoardArea(point: Point) : boolean {
-        return point.x >= 0 && point.x < cols && point.y >= 0 && point.y < rows;
-    }
-
-    switch(direction) {
+    const nextPoint = {x : point.x, y: point.y}
+    switch (direction) {
         case Direction.left:
-            x--;
-            break;
+            nextPoint.x--
+            if (nextPoint.x < 0) nextPoint.x = cols - 1
+            return nextPoint
         case Direction.right:
-            x++;
-            break;
-        case Direction.bottom:
-            y++;
-            break;
-        case Direction.top:
-            y--;
-            break;
-    }
-    const p = {x,y}
-    if(isBoardArea(p)) {
-        return p;
-    } else {
-        if(x >= cols) p.x = 0;
-        if(y >= rows) p.y = 0;
-        if(x < 0) p.x = cols - 1;
-        if(y < 0) p.y = rows - 1;
-        return p;
+            nextPoint.x++
+            if(nextPoint.x >= cols) nextPoint.x = 0
+            return nextPoint
+        case Direction.up:
+            nextPoint.y--
+            if(nextPoint.y < 0) nextPoint.y = rows - 1
+            return nextPoint
+        case Direction.down:
+            nextPoint.y++
+            if(nextPoint.y >= rows) nextPoint.y = 0
+            return nextPoint
     }
 }

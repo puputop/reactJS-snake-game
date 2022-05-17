@@ -13,7 +13,7 @@ export type Coin = {
 
 export type CoinsFarm = {
     setSnake: (snake : Snake) => CoinsFarm,
-    Draw: (params : {gameDuration: number}) => ReactElement,
+    Render: (params : {gameDuration: number}) => ReactElement,
     start: () => CoinsFarm,
     stop: () => CoinsFarm,
     empty: () => CoinsFarm,
@@ -27,24 +27,22 @@ export type CoinsFarm = {
 }
 
 /**
- * @param params
  * function updateCallback - will be call if coins collection was change
  */
-export function createCoinsFarm(params: {board: BoardSize, getGameDuration: Function, onChangeCallback: Function }): CoinsFarm {
-    const {board, getGameDuration, onChangeCallback} = params;
-    let respawnIntervalMin: number = COINS.RESPAWN_INTERVAL_MIN;
-    let respawnIntervalMax: number = COINS.RESPAWN_INTERVAL_MAX;
-    let lifetimeMin: number = COINS.LIFETIME_MIN;
-    let lifetimeMax: number = COINS.LIFETIME_MAX;
-    let coins: Coin[] = [];
-    let isWork = false;
-    let workTimer: NodeJS.Timer | null = null;
-    let lifetimeTimers: NodeJS.Timer[] = [];
+export function createCoinsFarm(board: BoardSize, getGameDuration: Function, onChangeCallback: Function): CoinsFarm {
+    let respawnIntervalMin: number = COINS.RESPAWN_INTERVAL_MIN
+    let respawnIntervalMax: number = COINS.RESPAWN_INTERVAL_MAX
+    let lifetimeMin: number = COINS.LIFETIME_MIN
+    let lifetimeMax: number = COINS.LIFETIME_MAX
+    let coins: Coin[] = []
+    let isWork = false
+    let workTimer: NodeJS.Timer | null = null
+    let lifetimeTimers: NodeJS.Timer[] = []
     let currentSnake: Snake
     let k = 1 // accelerationCoefficient
 
     function getBornDelay(): number {
-        return Math.round((respawnIntervalMin + Math.random() * (respawnIntervalMax - respawnIntervalMin)) * k);
+        return Math.round((respawnIntervalMin + Math.random() * (respawnIntervalMax - respawnIntervalMin)) * k)
     }
 
     const addLifetimeTimer = (coin: Coin): void => {
@@ -53,9 +51,9 @@ export function createCoinsFarm(params: {board: BoardSize, getGameDuration: Func
                 () => {
                     for(let i = coins.length - 1;i >= 0; i--) {
                         if(coins[i] === coin) {
-                            coins.splice(i, 1);
-                            onChangeCallback();
-                            return;
+                            coins.splice(i, 1)
+                            onChangeCallback()
+                            return
                         }
                     }
                 },
@@ -66,10 +64,10 @@ export function createCoinsFarm(params: {board: BoardSize, getGameDuration: Func
 
     const isVacantPoint = (p: Point): boolean => {
         for (let i = 0; i < coins.length; i++) {
-            const sp = coins[i].point;
-            if (p.x === sp.x && p.y === sp.y) return false;
+            const sp = coins[i].point
+            if (p.x === sp.x && p.y === sp.y) return false
         }
-        return (!currentSnake || indexOfPoint(p, currentSnake.getDisposition()) === -1);
+        return (!currentSnake || indexOfPoint(p, currentSnake.getDisposition()) === -1)
     }
 
     const createCoin = (): Coin => {
@@ -174,7 +172,7 @@ export function createCoinsFarm(params: {board: BoardSize, getGameDuration: Func
             })
             return this
         },
-        Draw: () => <DrawCoins coins={coins} gameDuration={getGameDuration()}/>,
+        Render: () => <RenderCoins coins={coins} gameDuration={getGameDuration()}/>,
         hasCoinThere: (point: Point) => {
             for(let coin of coins) {
                 if(coin.point.x === point.x && coin.point.y === point.y) return true;
@@ -204,7 +202,7 @@ export function createCoinsFarm(params: {board: BoardSize, getGameDuration: Func
     }
 }
 
-export function DrawCoins(params: { coins: Array<Coin>, gameDuration: number }): ReactElement {
+export function RenderCoins(params: { coins: Array<Coin>, gameDuration: number }): ReactElement {
     const coins = params.coins;
     let sprites: ReactElement[] = [];
     for (let i = 0; i < coins.length; i++) {
