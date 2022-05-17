@@ -12,11 +12,6 @@ import GameOverSprite from "./Interface/Sprites/GameOverSprite";
 import {getDirection, isForceStop, isPause} from "./ControlKeys";
 import {IScoreProps} from "./Interface/Score";
 
-/*
-TODO раскидать стили по файлам
-4. изучить модули для подгрузки стилей
-5. изучить наследование для определения параметров интерфейсов по умолчанию
- */
 export interface IGameProps {
     board: BoardSize
 }
