@@ -11,13 +11,14 @@ Go test [here](https://react-js-snake-game.vercel.app)
  - force game over press `esc`
 
 ### Build with your setting
-1) edit `config.ts`
-2) `npm start`
-3) Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-4) For build `npm run build`
+1) edit `/lib/config.ts` - game general settings
+2) edit `/lib/controlKeys.ts` - game control settings
+3) `npm start`
+4) Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+5) For build `npm run build`
 
 ### Structure
- 1) `/lib/Game.tsx` - provide user events
- 2) `/lib/Interface/` - elements UI
- 3) `/lib/Objects/` - game objects
- 4) `/styles/` - css files
+ 1) `/src/Game.tsx` - provide user events
+ 2) `/src/lib/Interface/` - elements UI
+ 3) `/src/lib/common/` - logic
+ 4) `/src/styles/` - css files
