@@ -1,0 +1,23 @@
+.coin
+  display: flex
+  justify-content: center
+  align-items: center
+  color: saddlebrown
+  font-size: 11px
+  z-index: 102
+  position: absolute
+  background-color: gold
+  border: 1px solid darkorange
+  border-radius: 50%
+  width: 14px
+  height: 14px
+  animation: coinAnimation 1000ms linear infinite
+
+@keyframes coinAnimation
+  0%
+    transform: rotateY(0deg)
+  50%
+    transform: rotateY(90deg)
+  100%
+    transform: rotateY(0deg)
+

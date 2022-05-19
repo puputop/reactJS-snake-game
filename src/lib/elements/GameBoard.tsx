@@ -1,6 +1,6 @@
 import React, {ReactElement} from "react"
 
-import styles from '@/styles/GameBoard.module.sass'
+import styles from '@/styles/board.module.sass'
 import Board from "../models/Board"
 
 function GameBoard(props: {board : Board}) : ReactElement  {
