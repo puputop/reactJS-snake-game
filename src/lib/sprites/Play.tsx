@@ -1,5 +1,5 @@
-import '../../../styles/sprites/sprite.css'
-import '../../../styles/sprites/play-sprite.css'
+import '../../styles/sprites/sprite.css'
+import '../../styles/sprites/play-sprite.css'
 import React, {ReactElement} from "react";
 
 export default function Play(props: {points : number}): ReactElement {

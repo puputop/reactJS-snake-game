@@ -1,6 +1,6 @@
-import '../../../styles/sprites/sprite.css'
+import '../../styles/sprites/sprite.css'
 import React, {ReactElement} from "react";
-import {menuActions, MenuButton, OnClickMenuHandler} from "../MenuButton";
+import {menuActions, MenuButton, OnClickMenuHandler} from "../elements/MenuButton";
 
 export interface IMainMenuSpriteProps {
     onClickMenuHandler: OnClickMenuHandler
