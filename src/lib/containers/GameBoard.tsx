@@ -1,4 +1,4 @@
-import '../../styles/board.css'
+import '../../styles/game-board.sass'
 import {ReactElement} from "react"
 import Board from "../models/Board"
 

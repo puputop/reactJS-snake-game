@@ -1,0 +1,22 @@
+$board-bg-color: #fff
+$board-border-color: #bbb
+$board-length: 20px
+
+
+#board-bg
+  background-color: $board-bg-color
+  display: flex
+  flex-direction: column
+  border-right: 1px solid $board-border-color
+  border-top: 1px solid $board-border-color
+
+.line
+  display: flex
+  flex-direction: row
+
+.field
+  box-sizing: border-box
+  width: $board-length
+  height: $board-length
+  border-left: 1px solid $board-border-color
+  border-bottom: 1px solid $board-border-color
