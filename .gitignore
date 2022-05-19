@@ -23,3 +23,6 @@ yarn-debug.log*
 yarn-error.log*
 /.idea/misc.xml
 /.idea/vcs.xml
+
+# other
+/assets/presentation

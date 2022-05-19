@@ -1,6 +1,7 @@
 # SNAKE 1.0 is a simple game on the ReactJS
 Go test [here](https://react-js-snake-game.vercel.app)
 
+<img src="./assets/preview.gif" alt="game snake reactJS">
 
 ### Controls
  - just download build and open index.html in any browser
