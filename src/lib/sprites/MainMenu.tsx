@@ -1,4 +1,4 @@
-import '../../styles/sprites/sprite.css'
+import styles from '@/styles/sprites/common.module.css'
 import React, {ReactElement} from "react";
 import {menuActions, Button, OnClickMenuHandler} from "../elements/Button";
 
@@ -7,10 +7,10 @@ export interface IMainMenuSpriteProps {
 }
 
 export default function MainMenu(props: IMainMenuSpriteProps): ReactElement {
-    return <div className='sprite fill'>
-        <p className='title'>SNAKE REACT JS</p>
+    return <div className={styles.sprite}>
+        <p className={styles.title}>SNAKE REACT JS</p>
         <Button action={menuActions.START_NEW_GAME} {...props}/>
-        <p className='tip'>Press <span className='buttonInactive'>SPACE</span> to pause/continue</p>
-        <p className='tip'>Press <span className='buttonInactive'>ESCAPE</span> for forced game over</p>
+        <p className={styles.tip}>Press <span className={styles.asButton}>SPACE</span> to pause/continue</p>
+        <p className={styles.tip}>Press <span className={styles.asButton}>ESCAPE</span> for forced game over</p>
     </div>
 }

@@ -1,10 +1,9 @@
-import '../../styles/sprites/sprite.css'
-import '../../styles/sprites/pause-sprite.css'
+import styles from '@/styles/sprites/pause.module.css'
 import {ReactElement} from "react";
 
 export default function Pause () : ReactElement {
-    return <div className='sprite'>
-        <span className='pause-icon' />
-        <p className='tip'>Press <span className='buttonInactive'>SPACE</span> to continue</p>
+    return <div className={styles.sprite}>
+        <span className={styles.icon} />
+        <p className={styles.tip}>Press <span className={styles.asButton}>SPACE</span> to continue</p>
     </div>
 }

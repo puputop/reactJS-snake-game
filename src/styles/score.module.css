@@ -1,0 +1,25 @@
+.wrapper {
+  margin: 5px;
+}
+
+.item {
+  background-color: #fff;
+  display: flex;
+  width: 140px;
+  margin: 5px;
+  padding: 3px;
+  color: #1c2949;
+  font-size: 11pt;
+}
+
+.label {
+  width: 65px;
+}
+
+.value {
+  text-align: center;
+  width: 75px;
+  font-weight: bold;
+}
+
+/*# sourceMappingURL=score.module.css.map */

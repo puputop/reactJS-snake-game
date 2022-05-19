@@ -1,0 +1,83 @@
+/* general colors scheme */
+/* sizes */
+.sprite {
+  z-index: 3000;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #1c2949;
+}
+
+.sprite.disappear500 {
+  top: -10000px;
+  bottom: initial;
+  left: initial;
+  right: initial;
+  animation: 500ms disappear linear;
+  opacity: 0;
+}
+
+@keyframes disappear {
+  0% {
+    opacity: 1;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+  100% {
+    opacity: 0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+}
+.title {
+  text-align: center;
+  color: #fff;
+  font-size: 20pt;
+  margin: 5px;
+}
+
+.tip {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.asButton {
+  background-color: #eee;
+  border: 1px solid #000;
+  padding: 0 5px;
+}
+
+.sprite {
+  background-color: transparent;
+}
+
+.icon {
+  display: block;
+  box-sizing: border-box;
+  width: 70px;
+  margin: 10px;
+  border-top: 50px solid transparent;
+  border-left: 70px solid darkgreen;
+  border-bottom: 50px solid transparent;
+}
+
+.gameScore {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  font-size: 8pt;
+}
+
+/*# sourceMappingURL=play.module.css.map */

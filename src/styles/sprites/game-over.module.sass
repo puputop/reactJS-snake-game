@@ -1,0 +1,44 @@
+@import "./common.module.sass"
+
+.sprite
+  opacity: 0.9
+
+.sprite .disappearText
+  font-size: 0
+  color: transparent
+  animation: growthAndDisappear 3s linear
+  white-space: nowrap
+
+@keyframes growthAndDisappear
+  0%
+    font-size: 1pt
+    color: #fff
+  60%
+    color: #fff
+  99%
+    font-size: 100pt
+  100%
+    font-size: 100pt
+    color: transparent
+
+.sprite .delaySprite
+  position: absolute
+  display: flex
+  flex-direction: column
+  align-items: center
+  justify-content: center
+  top: 0
+  bottom: 0
+  left: 0
+  right: 0
+  opacity: 1
+  animation: appearanceDelay 4s linear
+
+@keyframes appearanceDelay
+  0%
+    opacity: 0
+  76%
+    opacity: 0
+  100%
+    opacity: 1
+

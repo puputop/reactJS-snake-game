@@ -1,0 +1,30 @@
+.buttonActive,
+.buttonInactive {
+  text-decoration: none;
+  text-align: center;
+  font-weight: bold;
+  display: block;
+  width: 150px;
+  margin: 5px;
+  padding: 5px;
+  border: 1px solid #1c2949;
+  color: #1c2949;
+}
+
+.buttonInactive {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #eee;
+}
+
+.buttonActive {
+  opacity: 1;
+  cursor: pointer;
+  background-color: #61dafb;
+}
+
+.buttonActive:hover {
+  background-color: aqua;
+}
+
+/*# sourceMappingURL=button.module.css.map */
