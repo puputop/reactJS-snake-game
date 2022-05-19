@@ -11,7 +11,7 @@ export interface IGameOverSpriteProps {
 
 const menuButtons: menuActions[] = [menuActions.START_NEW_GAME, menuActions.GO_TO_MAIN_MENU]
 
-export default function GameOverSprite(props: IGameOverSpriteProps): ReactElement {
+export default function GameOver(props: IGameOverSpriteProps): ReactElement {
     const {onClickMenuHandler, scoreProps} = props
     return <div className='sprite fill opacity90'>
         <p className='disappear-text'>GAME OVER</p>

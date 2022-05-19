@@ -6,10 +6,10 @@ import {createSnake} from "./lib/models/snake/createSnake";
 import {pointsPerStep, SNAKE} from "./lib/config";
 import CoinsFarm, {createCoinsFarm} from "./lib/models/coins/CoinsFarm";
 import {menuActions} from "./lib/containers/MenuButton";
-import PlaySprite from "./lib/containers/sprites/PlaySprite";
-import PauseSprite from "./lib/containers/sprites/PauseSprite";
-import MainMenuSprite from "./lib/containers/sprites/MainMenuSprite";
-import GameOverSprite from "./lib/containers/sprites/GameOverSprite";
+import Play from "./lib/containers/sprites/Play";
+import Pause from "./lib/containers/sprites/Pause";
+import MainMenu from "./lib/containers/sprites/MainMenu";
+import GameOver from "./lib/containers/sprites/GameOver";
 import {getDirection, isForceStop, isPause} from "./lib/controlKeys";
 import {IScoreProps} from "./lib/containers/Score";
 import Snake from "./lib/models/snake/Snake";
@@ -265,14 +265,14 @@ class Game extends React.Component<IGameProps, IGameState> {
                         snakeLength: this.snake.getLength(),
                         snakeSpeed: this.getSnakeSpeed()
                     }
-                    return <GameOverSprite scoreProps={scoreProps} onClickMenuHandler={this.onClickMenuHandler}/>
+                    return <GameOver scoreProps={scoreProps} onClickMenuHandler={this.onClickMenuHandler}/>
                 } else {
-                    return <MainMenuSprite onClickMenuHandler={this.onClickMenuHandler}/>
+                    return <MainMenu onClickMenuHandler={this.onClickMenuHandler}/>
                 }
             case gameStatus.PLAY:
-                return <PlaySprite key={this.state.pauseStartTime} points={this.state.points}/>
+                return <Play key={this.state.pauseStartTime} points={this.state.points}/>
             case gameStatus.PAUSE:
-                return <PauseSprite key={this.state.pauseStartTime}/>
+                return <Pause key={this.state.pauseStartTime}/>
         }
     }
 

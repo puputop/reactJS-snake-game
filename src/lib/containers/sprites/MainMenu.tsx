@@ -6,7 +6,7 @@ export interface IMainMenuSpriteProps {
     onClickMenuHandler: OnClickMenuHandler
 }
 
-export default function MainMenuSprite(props: IMainMenuSpriteProps): ReactElement {
+export default function MainMenu(props: IMainMenuSpriteProps): ReactElement {
     return <div className='sprite fill'>
         <p className='title'>SNAKE REACT JS</p>
         <MenuButton action={menuActions.START_NEW_GAME} {...props}/>

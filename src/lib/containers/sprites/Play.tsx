@@ -2,7 +2,7 @@ import '../../../styles/sprites/sprite.css'
 import '../../../styles/sprites/play-sprite.css'
 import React, {ReactElement} from "react";
 
-export default function PlaySprite(props: {points : number}): ReactElement {
+export default function Play(props: {points : number}): ReactElement {
     return <>
         <div className='game-score'>points: {Math.round(props.points)}</div>
         <div className='sprite disappear500'>
