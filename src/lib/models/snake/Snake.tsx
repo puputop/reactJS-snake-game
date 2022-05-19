@@ -1,5 +1,4 @@
-import '../../../styles/snake.css';
-
+import styles from '@/styles/snake.module.sass';
 import CoinsFarm from "../coins/CoinsFarm";
 import Point, {Direction} from "../Point";
 import {ReactElement} from "react";
@@ -33,39 +32,39 @@ export function RenderSnake(params: { snakeDisposition: Point[] }): ReactElement
             top: point.y * cellLength,
             left: point.x * cellLength,
         }
+        const classNames: string[] = [styles.body]
+        let key = point.x + '-' + point.y
+        const neighborsPoints: Point[] = [];
+        const nextPoint = snakeDisposition[i + 1];
+        const prevPoint = snakeDisposition[i - 1];
         if (i === 0) {
             // tail of the snake
-            const nextPoint = snakeDisposition[i + 1];
-
-            sprites.push(<span className={'body tail ' + classOfTheDirection(point, [nextPoint])}
-                               style={style} key='tail'></span>)
+            neighborsPoints.push(nextPoint)
+            classNames.push(styles.tail)
         } else if (i === snakeDisposition.length - 1) {
             // head of the snake
-            const prevPoint = snakeDisposition[i - 1];
-
-            sprites.push(<span className={'body head ' + classOfTheDirection(point, [prevPoint])}
-                               style={style} key='head'></span>)
+            key = 'head' // when die snake will cross body and duplicate xy-key call error
+            neighborsPoints.push(prevPoint)
+            classNames.push(styles.head)
         } else {
             // middle part of the snake
-            const nextPoint = snakeDisposition[i + 1];
-            const prevPoint = snakeDisposition[i - 1];
-
-            sprites.push(<span className={'body ' + classOfTheDirection(point, [nextPoint, prevPoint])}
-                               style={style} key={i}></span>)
+            neighborsPoints.push(nextPoint, prevPoint)
         }
+        classNames.push(classOfTheDirection(point, neighborsPoints))
+        sprites.push(<span className={classNames.join(' ')} style={style} key={key}></span>)
     }
-    return <div className='snake'>{sprites.concat()}</div>;
+    return <div className={styles.snake}>{sprites.concat()}</div>;
 
     function classOfTheDirection(point: Point, neighborsPoints: Point[]): string {
         const {x, y} = point;
         let className: string[] = [];
         neighborsPoints.forEach(function (p) {
             if (x === p.x) {
-                if (p.y === y - 1) className.push('top');
-                else if (p.y === y + 1) className.push('bottom');
+                if (p.y === y - 1) className.push(styles.top);
+                else if (p.y === y + 1) className.push(styles.bottom);
             } else if (y === p.y) {
-                if (p.x === x - 1) className.push('left');
-                else if (p.x === x + 1) className.push('right');
+                if (p.x === x - 1) className.push(styles.left);
+                else if (p.x === x + 1) className.push(styles.right);
             }
         })
         return className.join(' ');

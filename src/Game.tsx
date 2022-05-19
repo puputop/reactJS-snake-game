@@ -1,11 +1,11 @@
 import React, {ReactElement} from 'react';
-import './styles/game.css';
+import styles from '@/styles/game.module.sass';
 import Board from "./lib/models/Board";
 import GameBoard from "./lib/elements/GameBoard";
 import {createSnake} from "./lib/models/snake/createSnake";
 import {pointsPerStep, SNAKE} from "./lib/config";
 import CoinsFarm, {createCoinsFarm} from "./lib/models/coins/CoinsFarm";
-import {menuActions} from "./lib/elements/MenuButton";
+import {menuActions} from "./lib/elements/Button";
 import Play from "./lib/sprites/Play";
 import Pause from "./lib/sprites/Pause";
 import MainMenu from "./lib/sprites/MainMenu";
@@ -278,7 +278,7 @@ class Game extends React.Component<IGameProps, IGameState> {
 
     render() {
         return <div id='board-wrapper'>
-            <div id='board-active-area' ref={this.gameBoardDiv} tabIndex={0}
+            <div className={styles.game} ref={this.gameBoardDiv} tabIndex={0}
                  onKeyDown={(e) => this.onKeyDownHandler(e)}>
 
                 <GameBoard board={this.props.board}/>

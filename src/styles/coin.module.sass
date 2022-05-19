@@ -1,16 +1,18 @@
+@import "./config"
+
 .coin
   display: flex
   justify-content: center
   align-items: center
-  color: saddlebrown
-  font-size: 11px
+  color: $coin-color
+  font-size: $board-length * 0.5
   z-index: 102
   position: absolute
-  background-color: gold
-  border: 1px solid darkorange
+  background-color: $coin-bg-color
+  border: 1px solid $coin-border-color
   border-radius: 50%
-  width: 14px
-  height: 14px
+  width: $board-length * 0.7
+  height: $board-length * 0.7
   animation: coinAnimation 1000ms linear infinite
 
 @keyframes coinAnimation

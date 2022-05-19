@@ -2,7 +2,7 @@ import '../../styles/sprites/sprite.css'
 import '../../styles/sprites/game-over-sprite.css'
 import React, {ReactElement} from "react";
 import Score, {IScoreProps} from "../elements/Score";
-import {menuActions, MenuButton, OnClickMenuHandler} from "../elements/MenuButton";
+import {menuActions, Button, OnClickMenuHandler} from "../elements/Button";
 
 export interface IGameOverSpriteProps {
     scoreProps: IScoreProps,
@@ -18,7 +18,7 @@ export default function GameOver(props: IGameOverSpriteProps): ReactElement {
         <div className='delay-sprite'>
             <p className='title'>GAME OVER</p>
             <Score {...scoreProps}/>
-            {menuButtons.map((action) => <MenuButton key={action} action={action} {...{onClickMenuHandler}}/>)}
+            {menuButtons.map((action) => <Button key={action} action={action} {...{onClickMenuHandler}}/>)}
         </div>
     </div>
 }

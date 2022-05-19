@@ -44,7 +44,7 @@
     padding:5px;
 }
 
-.sprite .tip .button{
+.sprite .tip .buttonInactive{
     background-color:#eee;
     border:1px solid #000;
     padding:0 5px;

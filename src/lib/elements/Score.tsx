@@ -1,4 +1,4 @@
-import '../../styles/score.css'
+import styles from '@/styles/score.module.sass'
 import React, {ReactElement} from "react";
 
 type ScoreItem = {
@@ -8,9 +8,9 @@ type ScoreItem = {
 
 function RenderItem (item: ScoreItem, index : number) {
     const {label, value} = item;
-    return <p key={index} className='item'>
-        <span className='label'>{label}</span>
-        <span className='value'>{value}</span>
+    return <p key={index} className={styles.item}>
+        <span className={styles.label}>{label}</span>
+        <span className={styles.value}>{value}</span>
     </p>
 }
 
@@ -29,7 +29,7 @@ export default function Score (props: IScoreProps) : ReactElement {
         {label: 'Speed', value: (Math.round(1000 / snakeSpeed * 10) / 10).toString()}, // cells per second
         {label: 'Length', value: snakeLength.toString()},
     ]
-    return <div id='score'>
+    return <div className={styles.wrapper}>
         {scoreFields.map((item, index) => RenderItem(item, index))}
     </div>
 }

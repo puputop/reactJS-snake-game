@@ -5,6 +5,6 @@ import {ReactElement} from "react";
 export default function Pause () : ReactElement {
     return <div className='sprite'>
         <span className='pause-icon' />
-        <p className='tip'>Press <span className='button'>SPACE</span> to continue</p>
+        <p className='tip'>Press <span className='buttonInactive'>SPACE</span> to continue</p>
     </div>
 }
