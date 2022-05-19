@@ -1,8 +1,9 @@
 import '../../../styles/snake.css';
+
 import CoinsFarm from "../coins/CoinsFarm";
 import Point, {Direction} from "../Point";
 import {ReactElement} from "react";
-import {BOARD} from "../../config";
+import {BOARD} from "@/lib/config";
 
 
 type Snake = {
