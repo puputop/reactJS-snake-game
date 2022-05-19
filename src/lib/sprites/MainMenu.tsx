@@ -1,4 +1,4 @@
-import styles from '@/styles/sprites/common.module.css'
+import styles from '@/styles/sprites/common.module.sass'
 import React, {ReactElement} from "react";
 import {menuActions, Button, OnClickMenuHandler} from "../elements/Button";
 
