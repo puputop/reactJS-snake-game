@@ -1,17 +1,17 @@
 import React, {ReactElement} from 'react';
 import './styles/game.css';
 import Board from "./lib/models/Board";
-import GameBoard from "./lib/containers/GameBoard";
+import GameBoard from "./lib/elements/GameBoard";
 import {createSnake} from "./lib/models/snake/createSnake";
 import {pointsPerStep, SNAKE} from "./lib/config";
 import CoinsFarm, {createCoinsFarm} from "./lib/models/coins/CoinsFarm";
-import {menuActions} from "./lib/containers/MenuButton";
-import Play from "./lib/containers/sprites/Play";
-import Pause from "./lib/containers/sprites/Pause";
-import MainMenu from "./lib/containers/sprites/MainMenu";
-import GameOver from "./lib/containers/sprites/GameOver";
+import {menuActions} from "./lib/elements/MenuButton";
+import Play from "./lib/elements/sprites/Play";
+import Pause from "./lib/elements/sprites/Pause";
+import MainMenu from "./lib/elements/sprites/MainMenu";
+import GameOver from "./lib/elements/sprites/GameOver";
 import {getDirection, isForceStop, isPause} from "./lib/controlKeys";
-import {IScoreProps} from "./lib/containers/Score";
+import {IScoreProps} from "./lib/elements/Score";
 import Snake from "./lib/models/snake/Snake";
 
 export interface IGameProps {
