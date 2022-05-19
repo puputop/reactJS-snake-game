@@ -1,18 +1,18 @@
 import React, {ReactElement} from 'react';
 import './styles/game.css';
-import Board from "./lib/common/Board";
-import GameBoard from "./lib/Interface/GameBoard";
-import {createSnake} from "./lib/common/snake/createSnake";
+import Board from "./lib/models/Board";
+import GameBoard from "./lib/containers/GameBoard";
+import {createSnake} from "./lib/models/snake/createSnake";
 import {pointsPerStep, SNAKE} from "./lib/config";
-import CoinsFarm, {createCoinsFarm} from "./lib/common/coins/CoinsFarm";
-import {menuActions} from "./lib/Interface/MenuButton";
-import PlaySprite from "./lib/Interface/sprites/PlaySprite";
-import PauseSprite from "./lib/Interface/sprites/PauseSprite";
-import MainMenuSprite from "./lib/Interface/sprites/MainMenuSprite";
-import GameOverSprite from "./lib/Interface/sprites/GameOverSprite";
+import CoinsFarm, {createCoinsFarm} from "./lib/models/coins/CoinsFarm";
+import {menuActions} from "./lib/containers/MenuButton";
+import PlaySprite from "./lib/containers/sprites/PlaySprite";
+import PauseSprite from "./lib/containers/sprites/PauseSprite";
+import MainMenuSprite from "./lib/containers/sprites/MainMenuSprite";
+import GameOverSprite from "./lib/containers/sprites/GameOverSprite";
 import {getDirection, isForceStop, isPause} from "./lib/controlKeys";
-import {IScoreProps} from "./lib/Interface/Score";
-import Snake from "./lib/common/snake/Snake";
+import {IScoreProps} from "./lib/containers/Score";
+import Snake from "./lib/models/snake/Snake";
 
 export interface IGameProps {
     board: Board

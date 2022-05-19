@@ -1,5 +1,5 @@
 // React.KeyboardEvent.code
-import {Direction} from "./common/Point";
+import {Direction} from "./models/Point";
 
 const controlKeys = {
     pause: ['Space'],

@@ -1,6 +1,6 @@
 import '../../styles/board.css'
 import {ReactElement} from "react"
-import Board from "../common/Board"
+import Board from "../models/Board"
 
 function GameBoard(props: {board : Board}) : ReactElement  {
     const {cols, rows} = props.board
