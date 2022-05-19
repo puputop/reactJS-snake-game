@@ -26,3 +26,4 @@ yarn-error.log*
 
 # other
 /assets/presentation
+/.idea/inspectionProfiles/Project_NodeJS.xml
