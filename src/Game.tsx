@@ -1,5 +1,5 @@
 import React, {ReactElement} from 'react';
-import styles from '@/styles/game.module.sass';
+import styles from '@/game.module.sass';
 import Board from "./lib/models/Board";
 import GameBoard from "./lib/elements/GameBoard";
 import {createSnake} from "./lib/models/snake/createSnake";

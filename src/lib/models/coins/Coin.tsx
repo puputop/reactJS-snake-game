@@ -1,4 +1,4 @@
-import styles from "@/styles/coin.module.sass";
+import styles from "./coin.module.sass";
 import Point from "../Point";
 import {ReactElement} from "react";
 import {BOARD} from "../../config";

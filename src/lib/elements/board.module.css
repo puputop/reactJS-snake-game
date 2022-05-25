@@ -15,8 +15,8 @@
 
 .field {
   box-sizing: border-box;
-  width: 20px;
-  height: 20px;
+  width: 25px;
+  height: 25px;
   border-left: 1px solid #bbb;
   border-bottom: 1px solid #bbb;
 }

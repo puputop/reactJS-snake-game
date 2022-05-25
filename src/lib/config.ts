@@ -2,7 +2,7 @@
 import Point, {Direction} from "./models/Point";
 
 export const BOARD = {
-    CELL_LENGTH: 20 as number,  // width & height cell of board (if you want to change - need correct CSS (game.css))
+    CELL_LENGTH: 25 as number,  // width & height cell of board (if you want to change - need correct CSS (game.css))
     ROWS: 20 as number, // cells per row
     COLS: 20 as number // cells per column
 }

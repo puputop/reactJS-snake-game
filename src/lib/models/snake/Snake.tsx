@@ -1,4 +1,4 @@
-import styles from '@/styles/snake.module.sass';
+import styles from '@/lib/models/snake/snake.module.sass';
 import CoinsFarm from "../coins/CoinsFarm";
 import Point, {Direction} from "../Point";
 import {ReactElement} from "react";

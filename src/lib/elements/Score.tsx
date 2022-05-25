@@ -1,4 +1,4 @@
-import styles from '@/styles/score.module.sass'
+import styles from '@/lib/elements/score.module.sass'
 import React, {ReactElement} from "react";
 
 type ScoreItem = {
