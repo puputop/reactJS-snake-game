@@ -1,17 +1,35 @@
-/* Error: Can't find stylesheet to import.
- *   ,
- * 1 | @import "../../config.sass"
- *   |         ^^^^^^^^^^^^^^^^^^^
- *   '
- *   coin.module.sass 1:9  root stylesheet */
-
-body::before {
-  font-family: "Source Code Pro", "SF Mono", Monaco, Inconsolata, "Fira Mono",
-      "Droid Sans Mono", monospace, monospace;
-  white-space: pre;
-  display: block;
-  padding: 1em;
-  margin-bottom: 1em;
-  border-bottom: 2px solid black;
-  content: "Error: Can't find stylesheet to import.\a   \2577 \a 1 \2502  @import \"../../config.sass\"\a   \2502          ^^^^^^^^^^^^^^^^^^^\a   \2575 \a   coin.module.sass 1:9  root stylesheet";
+/* general colors scheme */
+/* width & height cell of board !!! MUST be === BOARD.CELL_LENGTH (in the config.ts) */
+/* all sizes calc from sizes of the cell */
+p, a {
+  font-size: 16px;
 }
+
+.coin {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: saddlebrown;
+  font-size: 10px;
+  z-index: 102;
+  position: absolute;
+  background-color: gold;
+  border: 1px solid darkorange;
+  border-radius: 50%;
+  width: 13.3px;
+  height: 13.3px;
+}
+
+@keyframes coinAnimation {
+  0% {
+    transform: rotateY(0deg);
+  }
+  50% {
+    transform: rotateY(90deg);
+  }
+  100% {
+    transform: rotateY(0deg);
+  }
+}
+
+/*# sourceMappingURL=coin.module.css.map */

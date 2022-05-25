@@ -1,0 +1,19 @@
+@import "../common.module"
+
+.sprite
+  background-color: transparent
+  opacity: 0.8
+
+.icon
+  display: flex
+  flex-direction: row
+
+.icon::before,
+.icon::after
+  content: " "
+  display: block
+  width: $board-length * 1.5
+  height: $board-length * 5
+  margin: $board-length * 0.5
+  background-color: $pause-icon-color
+

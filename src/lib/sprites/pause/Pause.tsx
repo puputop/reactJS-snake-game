@@ -1,4 +1,4 @@
-import styles from '@/lib/sprites/pause.module.sass'
+import styles from '@/lib/sprites/pause/pause.module.sass'
 import {ReactElement} from "react";
 
 export default function Pause () : ReactElement {

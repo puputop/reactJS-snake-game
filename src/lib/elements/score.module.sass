@@ -1,19 +1,21 @@
+@import "../config.sass"
+
 .wrapper
-  margin: 5px
+  margin: $board-length * 0.25
 
 .item
   background-color: #fff
   display: flex
-  width: 140px
-  margin: 5px
-  padding: 3px
-  color: #1c2949
-  font-size: 11pt
+  width: $board-length * 7
+  margin: $board-length * 0.25
+  padding: $board-length * 0.15
+  color: $main-color
+  font-size: $board-length * 0.75
 
 .label
-  width: 65px
+  width: $board-length * 3.25
 
 .value
   text-align: center
-  width: 75px
+  width: $board-length * 3.75
   font-weight: bold

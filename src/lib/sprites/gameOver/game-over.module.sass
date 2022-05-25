@@ -1,4 +1,4 @@
-@import "./common.module.sass"
+@import "../common.module"
 
 .sprite
   opacity: 0.9
@@ -11,14 +11,14 @@
 
 @keyframes growthAndDisappear
   0%
-    font-size: 1pt
+    font-size: 0
     color: #fff
   60%
     color: #fff
   99%
-    font-size: 100pt
+    font-size: $board-length * 6.5
   100%
-    font-size: 100pt
+    font-size: $board-length * 6.5
     color: transparent
 
 .sprite .delaySprite

@@ -1,3 +1,10 @@
+/* general colors scheme */
+/* width & height cell of board !!! MUST be === BOARD.CELL_LENGTH (in the config.ts) */
+/* all sizes calc from sizes of the cell */
+p, a {
+  font-size: 16px;
+}
+
 .buttonActive,
 .buttonInactive {
   text-decoration: none;
@@ -7,8 +14,8 @@
   width: 150px;
   margin: 5px;
   padding: 5px;
-  border: 1px solid #1c2949;
   color: #1c2949;
+  font-size: 16px;
 }
 
 .buttonInactive {

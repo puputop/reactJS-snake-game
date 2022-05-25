@@ -1,11 +1,16 @@
 /* general colors scheme */
-/* sizes */
+/* width & height cell of board !!! MUST be === BOARD.CELL_LENGTH (in the config.ts) */
+/* all sizes calc from sizes of the cell */
+p, a {
+  font-size: 16px;
+}
+
 .boardBg {
   background-color: #fff;
   display: flex;
   flex-direction: column;
-  border-right: 1px solid #bbb;
-  border-top: 1px solid #bbb;
+  border-right: 1px solid #eee;
+  border-top: 1px solid #eee;
 }
 
 .line {
@@ -15,10 +20,10 @@
 
 .field {
   box-sizing: border-box;
-  width: 25px;
-  height: 25px;
-  border-left: 1px solid #bbb;
-  border-bottom: 1px solid #bbb;
+  width: 20px;
+  height: 20px;
+  border-left: 1px solid #eee;
+  border-bottom: 1px solid #eee;
 }
 
 /*# sourceMappingURL=board.module.css.map */

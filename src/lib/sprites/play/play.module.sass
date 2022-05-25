@@ -1,0 +1,19 @@
+@import "../common.module.sass"
+
+.sprite
+  background-color: transparent
+
+.icon
+  display: block
+  box-sizing: border-box
+  width: $board-length * 3.5
+  margin: $board-length * 0.5
+  border-top: $board-length * 2.5 solid transparent
+  border-left: $board-length * 3.5 solid $play-icon-color
+  border-bottom: $board-length * 2.5 solid transparent
+
+.gameScore
+  position: absolute
+  bottom: 0
+  left: 0
+  font-size: $board-length * 0.55

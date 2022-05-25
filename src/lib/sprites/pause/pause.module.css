@@ -1,5 +1,10 @@
 /* general colors scheme */
-/* sizes */
+/* width & height cell of board !!! MUST be === BOARD.CELL_LENGTH (in the config.ts) */
+/* all sizes calc from sizes of the cell */
+p, a {
+  font-size: 16px;
+}
+
 .sprite {
   z-index: 3000;
   position: absolute;
@@ -42,7 +47,7 @@
 .title {
   text-align: center;
   color: #fff;
-  font-size: 20pt;
+  font-size: 26px;
   margin: 5px;
 }
 
@@ -61,6 +66,7 @@
 
 .sprite {
   background-color: transparent;
+  opacity: 0.8;
 }
 
 .icon {
@@ -75,7 +81,7 @@
   width: 30px;
   height: 100px;
   margin: 10px;
-  background-color: #000;
+  background-color: saddlebrown;
 }
 
 /*# sourceMappingURL=pause.module.css.map */

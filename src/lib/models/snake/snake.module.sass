@@ -1,29 +1,30 @@
+@import "../../config.sass"
+
 /* CreateSnake */
 .snake .head::before
   content: " "
   display: block
   position: absolute
 
-.snake .head.right::before
-  width: 5px
-  top: 8px
-  left: 0
-  border-top: 3px solid #fff
-  border-right: 2px solid transparent
+.snake .head.right::before,
+.snake .head.left::before
+  width: $board-length * 0.25
+  top: $board-length * 0.4
+  border-top: $board-length * 0.15 solid #fff
   animation: tongueHorizontalAnim 300ms linear infinite
 
+.snake .head.right::before
+  left: 0
+  border-right: $board-length * 0.1 solid transparent
+
 .snake .head.left::before
-  width: 5px
-  top: 8px
   right: 0
-  border-top: 3px solid #fff
-  border-left: 2px solid transparent
-  animation: tongueHorizontalAnim 300ms linear infinite
+  border-left: $board-length * 0.1 solid transparent
 
 @keyframes tongueHorizontalAnim
   0%
     border-top-color: #fff
-    width: 5px
+    width: $board-length * 0.25
   50%
     border-top-color: #fff
     width: 0
@@ -34,29 +35,30 @@
     width: 0
   100%
     border-top-color: #fff
-    width: 5px
+    width: $board-length * 0.25
+
+.snake .head.top::before,
+.snake .head.bottom::before
+  height: $board-length * 0.25
+  animation: tongueVerticalAnim 300ms linear infinite
 
 .snake .head.top::before
-  height: 5px
-  right: 8px
+  right: $board-length * 0.4
   bottom: 0
-  border-right: 3px solid #fff
-  border-top: 2px solid transparent
-  animation: tongueVerticalAnim 300ms linear infinite
+  border-right: $board-length * 0.15 solid #fff
+  border-top: $board-length * 0.1 solid transparent
 
 .snake .head.bottom::before
-  height: 5px
-  left: 8px
+  left: $board-length * 0.4
   top: 0
-  border-left: 3px solid #fff
-  border-bottom: 2px solid transparent
-  animation: tongueVerticalAnim 300ms linear infinite
+  border-left: $board-length * 0.15 solid #fff
+  border-bottom: $board-length * 0.1 solid transparent
 
 @keyframes tongueVerticalAnim
   0%
     border-right-color: #fff
     border-left-color: #fff
-    height: 5px
+    height: $board-length * 0.25
   50%
     border-right-color: #fff
     border-left-color: #fff
@@ -71,7 +73,7 @@
   100%
     border-right-color: #fff
     border-left-color: #fff
-    height: 5px
+    height: $board-length * 0.25
 
 /* eye */
 .snake .head::after
@@ -79,60 +81,60 @@
   content: " "
   display: block
   position: absolute
-  width: 3px
-  height: 3px
-  background-color: green
-  border: 1px solid #fff
+  width: $board-length * 0.15
+  height: $board-length * 0.15
+  background-color: $snake-eye-color
+  border: $board-length * 0.05 solid $snake-eye-color-2
   border-radius: 50%
 
 .snake .head.left::after
-  top: 2px
-  left: 2px
+  top: $board-length * 0.1
+  left: $board-length * 0.1
 
 .snake .head.right::after
-  top: 2px
-  right: 2px
+  top: $board-length * 0.1
+  right: $board-length * 0.1
 
 .snake .head.top::after
-  top: 2px
-  right: 2px
+  top: $board-length * 0.1
+  right: $board-length * 0.1
 
 .snake .head.bottom::after
-  bottom: 2px
-  left: 2px
+  bottom: $board-length * 0.1
+  left: $board-length * 0.1
 
 
 .snake .body
   position: absolute
-  background-color: #1c2949
-  margin-top: 3px
-  margin-left: 3px
-  width: 14px
-  height: 14px
-  border: 0 solid #1c2949
+  background-color: $snake-body-color
+  margin-top: $board-length * 0.15
+  margin-left: $board-length * 0.15
+  width: $board-length * 0.7
+  height: $board-length * 0.7
+  border: 0 solid $snake-body-color
   border-radius: 50%
 
 .snake .body.left
   border-top-left-radius: 0
   border-bottom-left-radius: 0
-  border-left-width: 3px
+  border-left-width: $board-length * 0.15
   margin-left: 0
 
 .snake .body.right
   border-top-right-radius: 0
   border-bottom-right-radius: 0
-  border-right-width: 3px
+  border-right-width: $board-length * 0.15
 
 .snake .body.top
   border-top-left-radius: 0
   border-top-right-radius: 0
-  border-top-width: 3px
+  border-top-width: $board-length * 0.15
   margin-top: 0
 
 .snake .body.bottom
   border-bottom-left-radius: 0
   border-bottom-right-radius: 0
-  border-bottom-width: 3px
+  border-bottom-width: $board-length * 0.15
 
 .snake .body.top.left::before,
 .snake .body.top.right::before,
@@ -143,32 +145,32 @@
   position: absolute
 
 .snake .body.top.left::before
-  top: -3px
-  left: -3px
+  top: -$board-length * 0.15
+  left: -$board-length * 0.15
   border-bottom-right-radius: 50%
-  border-bottom: 3px solid #fff
-  border-right: 3px solid #fff
+  border-bottom: $board-length * 0.15 solid #fff
+  border-right: $board-length * 0.15 solid #fff
 
 .snake .body.top.right::before
-  top: -3px
-  right: -3px
+  top: -$board-length * 0.15
+  right: -$board-length * 0.15
   border-bottom-left-radius: 50%
-  border-bottom: 3px solid #fff
-  border-left: 3px solid #fff
+  border-bottom: $board-length * 0.15 solid #fff
+  border-left: $board-length * 0.15 solid #fff
 
 .snake .body.bottom.left::before
-  bottom: -3px
-  left: -3px
+  bottom: -$board-length * 0.15
+  left: -$board-length * 0.15
   border-top-right-radius: 50%
-  border-top: 3px solid #fff
-  border-right: 3px solid #fff
+  border-top: $board-length * 0.15 solid #fff
+  border-right: $board-length * 0.15 solid #fff
 
 .snake .body.bottom.right::before
-  bottom: -3px
-  right: -3px
+  bottom: -$board-length * 0.15
+  right: -$board-length * 0.15
   border-top-left-radius: 50%
-  border-top: 3px solid #fff
-  border-left: 3px solid #fff
+  border-top: $board-length * 0.15 solid #fff
+  border-left: $board-length * 0.15 solid #fff
 
 .snake .tail
   width: 0
@@ -182,27 +184,27 @@
   left: 0
 
 .snake .tail.left::before
-  width: 10px
-  left: -3px
-  border-top: 7px solid #1c2949
-  border-bottom: 7px solid #1c2949
-  border-right: 7px solid transparent
+  width: $board-length * 0.5
+  left: -$board-length * 0.15
+  border-top: $board-length * 0.35 solid $snake-body-color
+  border-bottom: $board-length * 0.35 solid $snake-body-color
+  border-right: $board-length * 0.35 solid transparent
 
 .snake .tail.right::before
-  width: 10px
-  border-top: 7px solid #1c2949
-  border-bottom: 7px solid #1c2949
-  border-left: 7px solid transparent
+  width: $board-length * 0.5
+  border-top: $board-length * 0.35 solid $snake-body-color
+  border-bottom: $board-length * 0.35 solid $snake-body-color
+  border-left: $board-length * 0.35 solid transparent
 
 .snake .tail.top::before
-  top: -3px
-  height: 10px
-  border-left: 7px solid #1c2949
-  border-right: 7px solid #1c2949
-  border-bottom: 7px solid transparent
+  top: -$board-length * 0.15
+  height: $board-length * 0.5
+  border-left: $board-length * 0.35 solid $snake-body-color
+  border-right: $board-length * 0.35 solid $snake-body-color
+  border-bottom: $board-length * 0.35 solid transparent
 
 .snake .tail.bottom::before
-  height: 10px
-  border-left: 7px solid #1c2949
-  border-right: 7px solid #1c2949
-  border-top: 7px solid transparent
+  height: $board-length * 0.5
+  border-left: $board-length * 0.35 solid $snake-body-color
+  border-right: $board-length * 0.35 solid $snake-body-color
+  border-top: $board-length * 0.35 solid transparent

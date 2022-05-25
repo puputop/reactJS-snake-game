@@ -1,7 +1,7 @@
-import styles from '@/lib/sprites/game-over.module.sass'
+import styles from '@/lib/sprites/gameOver/game-over.module.sass'
 import React, {ReactElement} from "react";
-import Score, {IScoreProps} from "../elements/Score";
-import {menuActions, Button, OnClickMenuHandler} from "../elements/Button";
+import Score, {IScoreProps} from "../../elements/Score";
+import {menuActions, Button, OnClickMenuHandler} from "../../elements/Button";
 
 export interface IGameOverSpriteProps {
     scoreProps: IScoreProps,

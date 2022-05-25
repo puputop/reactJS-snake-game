@@ -1,5 +1,10 @@
 /* general colors scheme */
-/* sizes */
+/* width & height cell of board !!! MUST be === BOARD.CELL_LENGTH (in the config.ts) */
+/* all sizes calc from sizes of the cell */
+p, a {
+  font-size: 16px;
+}
+
 .sprite {
   z-index: 3000;
   position: absolute;
@@ -42,7 +47,7 @@
 .title {
   text-align: center;
   color: #fff;
-  font-size: 20pt;
+  font-size: 26px;
   margin: 5px;
 }
 
@@ -60,24 +65,56 @@
 }
 
 .sprite {
-  background-color: transparent;
+  opacity: 0.9;
 }
 
-.icon {
-  display: block;
-  box-sizing: border-box;
-  width: 70px;
-  margin: 10px;
-  border-top: 50px solid transparent;
-  border-left: 70px solid darkgreen;
-  border-bottom: 50px solid transparent;
+.sprite .disappearText {
+  font-size: 0;
+  color: transparent;
+  animation: growthAndDisappear 3s linear;
+  white-space: nowrap;
 }
 
-.gameScore {
+@keyframes growthAndDisappear {
+  0% {
+    font-size: 0;
+    color: #fff;
+  }
+  60% {
+    color: #fff;
+  }
+  99% {
+    font-size: 130px;
+  }
+  100% {
+    font-size: 130px;
+    color: transparent;
+  }
+}
+.sprite .delaySprite {
   position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  top: 0;
   bottom: 0;
   left: 0;
-  font-size: 8pt;
+  right: 0;
+  opacity: 1;
+  animation: appearanceDelay 4s linear;
 }
 
-/*# sourceMappingURL=play.module.css.map */
+@keyframes appearanceDelay {
+  0% {
+    opacity: 0;
+  }
+  76% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/*# sourceMappingURL=game-over.module.css.map */

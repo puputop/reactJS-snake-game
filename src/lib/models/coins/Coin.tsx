@@ -15,8 +15,8 @@ function RenderCoin(params: {coin : Coin, gameDuration: number}): ReactElement {
     const {coin, gameDuration} = params
     const {x,y} = coin.point
     const style = {
-        top: y * BOARD.CELL_LENGTH + 2,
-        left: x * BOARD.CELL_LENGTH + 2,
+        top: y * BOARD.CELL_LENGTH + (BOARD.CELL_LENGTH - 1) * 0.15,
+        left: x * BOARD.CELL_LENGTH + (BOARD.CELL_LENGTH - 1) * 0.15,
     }
     const lifetime = Math.max(0, Math.round((coin.bornTime + coin.lifetime - gameDuration) / 1000))
     const text = lifetime <= 5 ? lifetime.toString() : ''

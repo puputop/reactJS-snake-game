@@ -9,11 +9,11 @@
   z-index: 102
   position: absolute
   background-color: $coin-bg-color
-  border: 1px solid $coin-border-color
+  border: $board-length * 0.05 solid $coin-border-color
   border-radius: 50%
-  width: $board-length * 0.7
-  height: $board-length * 0.7
-  animation: coinAnimation 1000ms linear infinite
+  width: ($board-length - 1) * 0.7
+  height: ($board-length - 1) * 0.7
+  //animation: coinAnimation 1000ms linear infinite
 
 @keyframes coinAnimation
   0%

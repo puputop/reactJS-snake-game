@@ -1,3 +1,10 @@
+/* general colors scheme */
+/* width & height cell of board !!! MUST be === BOARD.CELL_LENGTH (in the config.ts) */
+/* all sizes calc from sizes of the cell */
+p, a {
+  font-size: 16px;
+}
+
 /* CreateSnake */
 .snake .head::before {
   content: " ";
@@ -5,22 +12,22 @@
   position: absolute;
 }
 
-.snake .head.right::before {
-  width: 5px;
-  top: 8px;
-  left: 0;
-  border-top: 3px solid #fff;
-  border-right: 2px solid transparent;
-  animation: tongueHorizontalAnim 300ms linear infinite;
-}
-
+.snake .head.right::before,
 .snake .head.left::before {
   width: 5px;
   top: 8px;
-  right: 0;
   border-top: 3px solid #fff;
-  border-left: 2px solid transparent;
   animation: tongueHorizontalAnim 300ms linear infinite;
+}
+
+.snake .head.right::before {
+  left: 0;
+  border-right: 2px solid transparent;
+}
+
+.snake .head.left::before {
+  right: 0;
+  border-left: 2px solid transparent;
 }
 
 @keyframes tongueHorizontalAnim {
@@ -44,22 +51,24 @@
     width: 5px;
   }
 }
-.snake .head.top::before {
+.snake .head.top::before,
+.snake .head.bottom::before {
   height: 5px;
+  animation: tongueVerticalAnim 300ms linear infinite;
+}
+
+.snake .head.top::before {
   right: 8px;
   bottom: 0;
   border-right: 3px solid #fff;
   border-top: 2px solid transparent;
-  animation: tongueVerticalAnim 300ms linear infinite;
 }
 
 .snake .head.bottom::before {
-  height: 5px;
   left: 8px;
   top: 0;
   border-left: 3px solid #fff;
   border-bottom: 2px solid transparent;
-  animation: tongueVerticalAnim 300ms linear infinite;
 }
 
 @keyframes tongueVerticalAnim {

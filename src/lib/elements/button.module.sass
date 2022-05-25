@@ -1,24 +1,26 @@
+@import "../config.sass"
+
 .buttonActive,
 .buttonInactive
   text-decoration: none
   text-align: center
   font-weight: bold
   display: block
-  width: 150px
-  margin: 5px
-  padding: 5px
-  border: 1px solid #1c2949
-  color: #1c2949
+  width: $board-length * 7.5
+  margin: $board-length * 0.25
+  padding: $board-length * 0.25
+  color: $main-color
+  font-size: $board-length * 0.8
 
 .buttonInactive
   opacity: 0.5
   cursor: not-allowed
-  background-color: #eee
+  background-color: $button-inactive-bg
 
 .buttonActive
   opacity: 1
   cursor: pointer
-  background-color: #61dafb
+  background-color: $button-active-bg
 
 .buttonActive:hover
-  background-color: aqua
+  background-color: $button-active-bg-hover

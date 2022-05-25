@@ -1,1 +1,1 @@
-{"version":3,"sourceRoot":"","sources":["config.sass","coin.module.sass"],"names":[],"mappings":"AAAA;AAOA;ACLA;EACE;EACA;EACA;EACA,ODDW;ECEX;EACA;EACA;EACA,kBDPc;ECQd;EACA;EACA;EACA;EACA;;;AAEF;EACE;IACE;;EACF;IACE;;EACF;IACE","file":"coin.module.css"}
+{"version":3,"sourceRoot":"","sources":["../../config.sass","coin.module.sass"],"names":[],"mappings":"AAAA;AAsBA;AACA;AAGA;EACE;;;ACzBF;EACE;EACA;EACA;EACA,ODMW;ECLX;EACA;EACA;EACA;EACA;EACA;EACA;EACA;;;AAGF;EACE;IACE;;EACF;IACE;;EACF;IACE","file":"coin.module.css"}

@@ -1,5 +1,10 @@
 /* general colors scheme */
-/* sizes */
+/* width & height cell of board !!! MUST be === BOARD.CELL_LENGTH (in the config.ts) */
+/* all sizes calc from sizes of the cell */
+p, a {
+  font-size: 16px;
+}
+
 .sprite {
   z-index: 3000;
   position: absolute;
@@ -42,7 +47,7 @@
 .title {
   text-align: center;
   color: #fff;
-  font-size: 20pt;
+  font-size: 26px;
   margin: 5px;
 }
 

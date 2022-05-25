@@ -1,4 +1,4 @@
-import styles from '@/lib/elements/button.module.sass'
+import styles from './button.module.sass'
 import React, {ReactElement} from 'react'
 
 export const enum menuActions {START_NEW_GAME, PAUSE, PLAY, STOP, GO_TO_MAIN_MENU}
