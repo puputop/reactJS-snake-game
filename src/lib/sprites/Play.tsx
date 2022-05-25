@@ -1,4 +1,4 @@
-import styles from '@/styles/sprites/play.module.sass'
+import styles from '@/lib/sprites/play.module.sass'
 import React, {ReactElement} from "react";
 
 export default function Play(props: {points : number}): ReactElement {
